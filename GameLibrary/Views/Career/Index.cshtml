@@ -1,0 +1,38 @@
+﻿@model BecomeHelperModel
+
+@{
+    ViewBag.Title = "Become Helper";
+    ViewBag.Description = "As a game Helper, you will be able to message the develepors of the post and inform them of your good ideas";
+    ViewBag.Description2 = "NOTE: Abusing this fuction thru spamming or offending will result in immediate ban and you will no longer take ANY career path.";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<h4 class="text-center">@ViewBag.Description</h4>
+<p class ="text-center">@ViewBag.Description2</p>
+
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData.ModelState["Error"].Errors.First().ErrorMessage
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="+359888888888">
+                <span asp-validation-for="PhoneNumber" class="small text-danger"></span>
+            </div>
+            <div class="text-center">
+                <input class="btn btn-primary mt-3 " type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

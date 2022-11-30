@@ -1,0 +1,24 @@
+﻿@model GameViewModel
+
+@{
+    ViewBag.Title = "Welcome!";
+}
+
+<h1 class="text-center">@ViewBag.Title</h1>
+@if(@Model != null){
+    <section>
+        <h2 class="text-center"><b>Hottest game on the website!</b></h2>
+        <h3 class="text-center">with @Model.LikesCount and @Model.DislikesCount</h3>
+        <img class="d-block w-100" style="height:500px"
+         src="@Model.ImageUrl" alt="@Model.Title">
+        <p></p>
+        <h5 class="text-center">
+            <a class="btn btn-primary" asp-controller="Game" asp-action="Details"
+           asp-route-gameId="@Model.Id"> @Model.Title</a>
+        </h5>
+
+    </section>
+}
+else{
+    <h2>No hot games!</h2>
+}

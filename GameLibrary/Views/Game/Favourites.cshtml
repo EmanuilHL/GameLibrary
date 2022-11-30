@@ -1,0 +1,30 @@
+﻿@model IEnumerable<GameViewModel>
+
+@{
+    ViewBag.Title = "Favourite Games";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+
+<div class="text-center row">
+    @foreach (var game in Model)
+    {
+        <div class="card col-4" style="width: 20rem; ">
+            <h5 class="card-title mt-1">@game.Title</h5>
+            <hr /> 
+            <img class="card-img-top" style="width: 18rem;"
+             src="@game.ImageUrl" alt="Game Image">
+            <div class="card-body">
+                <p class="mb-0">Rating: @game.Rating</p>
+                <p>Review: @game.ReviewType</p>
+                <p>Genre: @game.Genre</p>
+            </div>
+
+            <form class="input-group-sm" asp-route-gameId="@game.Id" asp-controller="Game" asp-action="UnFavourite" method="post">
+                <button type="submit" class="btn-danger">UnFavourite</button>
+            </form>
+        </div>
+    }
+</div>

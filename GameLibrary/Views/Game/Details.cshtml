@@ -1,0 +1,90 @@
+﻿
+@model CommentViewModel
+
+@{
+    ViewBag.Title = "Game Details";
+    ViewBag.SecondTitle = "Comment section";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="col-4">
+            <img class="card-img-top" style="width: 20rem;"
+                 src="@Model.ImageUrl" alt="Game Image">
+            <p></p>
+            <hr />
+            @if(this.User.Id() != Model.UserId)
+            {
+                if (this.User?.Identity?.IsAuthenticated ?? false)
+                {
+                    <section>
+                        <h5><b>Do you like this post?</b></h5>
+                        <form method="post" asp-controller="Game" asp-action="Like" asp-route-gameId="@Model.Id">
+                            <input class="ml-2 btn btn-success" type="submit" value="Like @Model.LikesCount" />
+                        </form>
+                        <form method="post" asp-controller="Game" asp-action="Dislike" asp-route-gameId="@Model.Id">
+                            <input class="ml-2 btn btn-danger" type="submit" value="Dislike @Model.DislikesCount" />
+                        </form>
+                    </section>
+                    
+                }
+                else{
+                    <h6><b>Log in inorder to share your opinion on this post!</b></h6>
+                    <a asp-controller="User" asp-action="Login">Log In</a>
+                    <h6><b>Or if you don't have an account, register now!</b></h6>
+                    <a asp-controller="User" asp-action="Register">Sign Up</a>
+                }
+            }
+            
+        </div>
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;"><u>@Model.Title</u></p>
+            <p>Title: <b>@Model.Title</b></p>
+            <p>
+                Rating:
+                <b>@Model.Rating</b>
+            </p>
+            <p>@Model.Description</p>
+            <p>Genre: <b>@Model.Genre</b></p>
+            <div class="form-inline">
+                @if (this.User.Identity.IsAuthenticated)
+                {
+                    
+                    @if(this.User.Id() == Model.UserId)
+                    {
+                        <a class="btn btn-warning" asp-controller="Game" asp-action="Edit" asp-route-gameId="@Model.Id">Edit</a>
+                        <a class="ml-2 btn btn-danger" asp-controller="Game" asp-action="Delete" asp-route-gameId="@Model.Id">Delete</a>
+                    }
+
+                   <form method="post" asp-controller="Game" asp-action="MarkAsFavourite" asp-route-gameId="@Model.Id">
+                        <input class="ml-2 btn btn-success" type="submit" value="Favourite" />
+                   </form>
+
+                   <a class="ml-2 btn btn-primary" asp-controller="Game" asp-action="Comment" asp-route-gameId="@Model.Id">Comment</a>
+                    
+                }
+            </div>
+            <p></p>
+            <hr />
+            <h6>@ViewBag.SecondTitle</h6>
+            @if(Model.Comments.Count() != 0){
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="card" style="width: 18rem;">
+                        <h6 class="card-header">@comment.UserName</h6>
+                        <div class="card-body">
+                            <p>@comment.CommentDescription</p>
+                        </div>
+                    </div>
+                }
+            }
+            else{
+                <h7>No Comments yet.</h7>
+            }
+
+        </div>
+    </div>
+</div>

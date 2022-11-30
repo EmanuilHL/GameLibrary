@@ -1,0 +1,39 @@
+﻿
+element.style {
+}
+
+.s003 form .inner-form .input-field.third-wrap {
+    width: 74px;
+}
+
+@media screen and (max-width: 992px){}
+.s003 form .inner-form .input-field {
+    height: 50px;
+}
+
+.s003 form .inner-form .input-field {
+    /* height: 68px; */
+}
+
+*{
+    box-sizing: border-box;
+}
+
+div {
+    display: block;
+}
+
+.s003 {
+    min-height: 100vh;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-family: poppins,sans-serif;
+    background-color: #a598ee;
+    background-size: cover;
+    background-position: center center;
+    padding: 15px;
+}

@@ -1,0 +1,69 @@
+﻿@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+<head>
+    <title>Gaming Login Form Responsive Widget Template  :: w3layouts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Gaming Login Form Widget Tab Form,Login Forms,Sign up Forms,Registration Forms,News letter Forms,Elements" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <link href="~/css/style.register.css" rel="stylesheet" type="text/css" media="all" />
+</head>
+
+
+<body>
+
+    <div class="padding-all">
+        <div class="header">
+            <h1><img src="~/images/ghost.png" alt=" "> GamingLibrary Register Form</h1>
+            <hr />
+            <h2>Join the elite.</h2>
+        </div>
+
+		<div class="design-w3l">
+			<div class="mail-form-agile">
+				<form method="post">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<div class="text-center mb-3">
+						<label asp-for="@Model.UserName" style="font-size:x-large" class="form-label"></label>
+						<input asp-for="@Model.UserName" class="form-control" autocomplete="username" aria-required="true" />
+						<span asp-validation-for="UserName" class="text-danger"></span>
+					</div>
+					<div class="text-center mb-3">
+						<label asp-for="@Model.Email">Email</label>
+						<input class="form-control" autocomplete="username" aria-required="true" asp-for="@Model.Email" />
+						<span asp-validation-for="@Model.Email" class="text-danger"></span>
+					</div>
+					<div class="text-center mb-3">
+						<label asp-for="@Model.Password" style="font-size:x-large" class="form-label"></label>
+						<input asp-for="@Model.Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" />
+						<span asp-validation-for="Password" class="text-danger"></span>
+					</div>
+					<div class="text-center mb-3">
+						<label asp-for="@Model.ConfirmPassword">Confirm Password</label>
+						<input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="@Model.ConfirmPassword" />
+						<span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+					</div>
+					<div class="text-center">
+						<button id="register-submit" type="submit" class="btn btn-primary">Sign Up</button>
+					</div>
+				</form>
+			</div>
+			<div class="clear"> </div>
+		</div>
+
+		<div class="footer">
+			<p>© 2017 Gaming Login form. All Rights Reserved | Design by  <a href="https://w3layouts.com/">  w3layouts </a></p>
+		</div>
+</body>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

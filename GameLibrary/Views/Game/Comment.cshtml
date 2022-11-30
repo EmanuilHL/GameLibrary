@@ -1,0 +1,38 @@
+﻿@model CommentPostModel
+
+
+@{
+    ViewBag.Title = "Comment on that post";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form method="post">
+            @Html.HiddenFor(x => x.CommentId)
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.UserId)
+            <div class="mb-3">
+                <label asp-for="@Model.UserName" class="form-label">Username</label>
+                <input asp-for="@Model.UserName" value="@Model.UserName" class="form-control" aria-required="true" disabled="disabled"/>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="mb-3" style="width 20px">
+                <label asp-for="@Model.CommentDescription" class="form-label">Description</label>
+                <input type="text" asp-for="@Model.CommentDescription" class="form-control" aria-required="true" />
+                <span asp-validation-for="CommentDescription" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input class="btn btn-primary" type="submit" value="Comment" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,19 @@
+﻿@model GameViewModel
+
+<div class="col-md-4">
+    <div class="card mb-3">
+        <h4>@Model.Title</h4>
+        <hr />
+        <img class="card-img-top" src="@Model.ImageUrl" alt="Game Image">
+        <div class="card-body text-center">
+            <br />
+            <h5>Rating: @Model.Rating</h5>
+            <h6>Review: @Model.ReviewType</h6>
+
+            <p>Genre: @Model.Genre</p>
+
+            <a asp-controller="Game" asp-action="Details" asp-route-gameId="@Model.Id"
+               class="btn btn-success">Details</a>
+        </div>
+    </div>
+</div>

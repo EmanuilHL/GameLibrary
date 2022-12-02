@@ -2,10 +2,12 @@
 using GameLibrary.Core.Models.Career;
 using GameLibrary.Extensions;
 using GameLibrary.Infrastructure.Data.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibrary.Controllers
 {
+    [Authorize]
     public class CareerController : Controller
     {
         private readonly ICareerService careerService;

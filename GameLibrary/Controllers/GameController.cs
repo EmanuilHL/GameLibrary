@@ -350,10 +350,10 @@ namespace GameLibrary.Controllers
         }
 
         //Tempdata from toastr doesnt work.
-        public async Task<IActionResult> Responses()
-        {
+        //public async Task<IActionResult> Responses()
+        //{
 
-        }
+        //}
     }
 }
 

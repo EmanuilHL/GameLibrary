@@ -12,7 +12,7 @@ namespace GameLibrary.Infrastructure.Data.Constants
         public static class Game
         {
             public const int MaxTitleLength = 50;
-            public const int MinTitleLength = 5;
+            public const int MinTitleLength = 3;
 
             public const int MaxImageLength = 300;
 

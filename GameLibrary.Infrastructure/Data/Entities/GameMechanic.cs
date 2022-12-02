@@ -10,19 +10,29 @@ namespace GameLibrary.Infrastructure.Data.Entities
 {
     public class GameMechanic
     {
+        /// <summary>
+        /// ONE develepor shoulkd have MANY game mechanic posts
+        /// </summary>
         [Key]
         public int Id { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string Name { get; set; } = null!;
-
+        public string GameName { get; set; } = null!;
 
         [Required]
-        public int HelperId { get; set; }
-        [ForeignKey(nameof(HelperId))]
-        public Helper Helper { get; set; } = null!;
+        [StringLength(400)]
+        public string MechanicDescription { get; set; } = null!;
+
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; } = null!;
+        [Required]
+        public User User { get; set; } = null!;
 
 
+        [ForeignKey(nameof(Game))]
+        public int GameId { get; set; }
+        [Required]
+        public Game Game { get; set; } = null!;
     }
 }

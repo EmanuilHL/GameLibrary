@@ -18,6 +18,7 @@ namespace GameLibrary.Infrastructure.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Theme> Themes { get; set; }
         public DbSet<Helper> Helpers { get; set; }
+        public DbSet<GameMechanic> GameMechanics { get; set; }
         //public DbSet<Like> Likes { get; set; }
 
         /// <summary>

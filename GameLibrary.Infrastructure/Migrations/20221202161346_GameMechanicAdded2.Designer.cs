@@ -4,6 +4,7 @@ using GameLibrary.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameLibrary.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221202161346_GameMechanicAdded2")]
+    partial class GameMechanicAdded2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,6 +129,9 @@ namespace GameLibrary.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("HelperId")
+                        .HasColumnType("int");
+
                     b.Property<string>("MechanicDescription")
                         .IsRequired()
                         .HasMaxLength(400)
@@ -139,6 +144,8 @@ namespace GameLibrary.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("HelperId");
 
                     b.HasIndex("UserId");
 
@@ -328,15 +335,15 @@ namespace GameLibrary.Infrastructure.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f1f3cd1d-25b2-4be7-a03f-a4e4425b2812",
+                            ConcurrencyStamp = "123c1e03-3bf5-4c13-8797-dc71da37b25b",
                             Email = "agent@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "AGENT@MAIL.COM",
                             NormalizedUserName = "PESHO",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIfaDANAX90ob+0IBKcgyYlTx2eXgYFcuJekD1StQRQScHLwTloGRmm1UOkvGDU1cQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIOXVKfSdbBvIiWMpllOKiKo+57GO1/vAjAG2YlcA3v49DyHr0+mM8NdbFATAxMFow==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3cebdfe7-6b39-49d0-9f41-b2453d79bcee",
+                            SecurityStamp = "ccf5870d-665e-479a-a329-712c65acd7d0",
                             TwoFactorEnabled = false,
                             UserName = "pesho"
                         });
@@ -562,6 +569,12 @@ namespace GameLibrary.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("GameLibrary.Infrastructure.Data.Entities.Helper", "Helper")
+                        .WithMany()
+                        .HasForeignKey("HelperId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("GameLibrary.Infrastructure.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -569,6 +582,8 @@ namespace GameLibrary.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Game");
+
+                    b.Navigation("Helper");
 
                     b.Navigation("User");
                 });

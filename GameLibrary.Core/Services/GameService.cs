@@ -53,62 +53,6 @@ namespace GameLibrary.Core.Services
 
 
         /// <summary>
-        /// Gets all the posts
-        /// Idea: Create multiple genres. For that seed the database with way more genres and redo the html.
-        /// </summary>
-        /// <returns></returns>
-        //public async Task<IEnumerable<GameViewModel>> GetAllAsync()
-        //{
-        //    return await repo.AllReadonly<Game>()
-        //        .Include(g => g.Genre)
-        //        .Select(x => new GameViewModel()
-        //        {
-        //            Id = x.Id,
-        //            ImageUrl = x.ImageUrl,
-        //            Title = x.Title,
-        //            Description = x.Description,
-        //            Rating = x.Rating,
-        //            Genre = x.Genre.GenreName,
-        //            ReviewTypeId = x.ReviewTypeId,
-        //            ReviewType = x.ReviewType.ToString()
-        //        })
-        //        .ToListAsync();
-        //}
-
-        /// <summary>
-        /// Gets the reviewId
-        /// </summary>
-        /// <param name="Rating"></param>
-        /// <returns></returns>
-        //private static int GetReview(decimal rating)
-        //{
-        //    int id = int.MinValue;
-
-        //    if (0.0m <= rating && rating < 2.0m)
-        //    {
-        //        id = 4;
-        //    }
-        //    else if (2.0m <= rating && rating < 4.0m)
-        //    {
-        //        id = 3;
-        //    }
-        //    else if (4.0m <= rating && rating < 6.0m)
-        //    {
-        //        id = 2;
-        //    }
-        //    else if (6.0m <= rating && rating < 8.0m)
-        //    {
-        //        id = 1;
-        //    }
-        //    else if (8.0m <= rating && rating <= 10.0m)
-        //    {
-        //        id = 0;
-        //    }
-
-        //    return id;
-        //}
-
-        /// <summary>
         /// gets All the genres (more will be seeded soon)
         /// </summary>
         /// <returns></returns>
@@ -721,7 +665,16 @@ namespace GameLibrary.Core.Services
             await repo.SaveChangesAsync();
         }
 
-        ///Idea for 2 controllers. Career Path: Then help a develepor: gives u a rank, smth like gameHelper and that rank allows
-        ///to contact the develepors of the post and message them a new game mechanic. For example a new axe with more hitpoints or smth
+
+        /// <summary>
+        /// Shows if a user has added atleast one post.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<bool> IsUserDevelepor(string userId)
+        { 
+            return await repo.All<Game>().AnyAsync(x => x.UserId == userId);
+        }
+
     }
 }

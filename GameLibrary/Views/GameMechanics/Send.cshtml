@@ -1,5 +1,45 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model MechanicsFormModel
+
 @{
+    ViewBag.Title = "Send a helpful message to develepors";
+    ViewBag.Description = "WARNING! Abusing this function thru faulty means resorts to immediate consequences";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form method="post">
+            @Html.HiddenFor(x => x.UserId)
+            <div class="mb-3">
+                <label asp-for="@Model.GameName" class="form-label">Name of the game:(*Be precise about the name*)</label>
+                <input asp-for="@Model.GameName" class="form-control" aria-required="true" />
+                <span asp-validation-for="GameName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="@Model.MechanicDescription" class="form-label">What do you want changed or added?</label>
+                <input asp-for="@Model.MechanicDescription" class="form-control" aria-required="true" />
+                <span asp-validation-for="MechanicDescription" class="text-danger"></span>
+            </div>
+            @*<div class="mb-3">
+                <label asp-for="@Model.GenreId" class="form-label">Genre</label>
+                <select asp-for="@Model.GenreId" class="form-control">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option value="@genre.Id">@genre.GenreName</option>
+                    }
+                </select>
+                <span asp-validation-for="GenreId" class="text-danger"></span>
+            </div>*@
+            <div class="mb-3">
+                <input class="btn btn-primary" type="submit" value="Send" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -11,6 +11,7 @@ namespace GameLibrary.Extensions
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<ICareerService, CareerService>();
+            services.AddScoped<IGameMechanicService, GameMechanicService>();
 
             return services;
         }

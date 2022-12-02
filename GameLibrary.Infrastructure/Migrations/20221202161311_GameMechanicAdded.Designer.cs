@@ -4,6 +4,7 @@ using GameLibrary.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameLibrary.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221202161311_GameMechanicAdded")]
+    partial class GameMechanicAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,40 +111,6 @@ namespace GameLibrary.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Games");
-                });
-
-            modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.GameMechanic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GameName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("MechanicDescription")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("GameMechanics");
                 });
 
             modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.Genre", b =>
@@ -328,15 +296,15 @@ namespace GameLibrary.Infrastructure.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f1f3cd1d-25b2-4be7-a03f-a4e4425b2812",
+                            ConcurrencyStamp = "a3c1f6f1-846f-43e6-be9e-ebf6eddbba52",
                             Email = "agent@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "AGENT@MAIL.COM",
                             NormalizedUserName = "PESHO",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIfaDANAX90ob+0IBKcgyYlTx2eXgYFcuJekD1StQRQScHLwTloGRmm1UOkvGDU1cQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIlfoWzcNiwbW7zJQKgddQ76azbvCOU6f5gvnfFmr5gOu/rdk5orrxJu/t7b417xjQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3cebdfe7-6b39-49d0-9f41-b2453d79bcee",
+                            SecurityStamp = "f923870b-64a4-442c-9804-259cc4677245",
                             TwoFactorEnabled = false,
                             UserName = "pesho"
                         });
@@ -550,25 +518,6 @@ namespace GameLibrary.Infrastructure.Migrations
                     b.Navigation("Genre");
 
                     b.Navigation("Theme");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.GameMechanic", b =>
-                {
-                    b.HasOne("GameLibrary.Infrastructure.Data.Entities.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("GameLibrary.Infrastructure.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Game");
 
                     b.Navigation("User");
                 });

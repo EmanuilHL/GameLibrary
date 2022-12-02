@@ -39,5 +39,7 @@ namespace GameLibrary.Core.Contracts
 
         Task LikePost(int gameId, string userId);
         Task DislikePost(int gameId, string userId);
+
+        Task<bool> IsUserDevelepor(string userId);
     }
 }

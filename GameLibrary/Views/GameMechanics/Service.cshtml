@@ -1,0 +1,24 @@
+﻿@model IEnumerable<MechanicsViewModel>
+
+@{
+    ViewBag.Title = "Requests by Helpers for Develepors";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+
+<div class="text-center row">
+    @foreach (var gameMechanic in Model)
+    {
+        <div class="card col-4" style="width: 20rem; ">
+            <h5 class="card-title mt-1">@gameMechanic.GameName</h5>
+            <hr />
+            <div class="card-body">
+                <textarea>@gameMechanic.MechanicDescription</textarea>
+            </div>
+
+            <a class="btn btn-edit" asp-controller="Game" asp-action="Details" asp-route-gameId="@gameMechanic.GameId">View suggested Game</a>
+        </div>
+    }
+</div>

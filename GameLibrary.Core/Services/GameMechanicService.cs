@@ -20,9 +20,17 @@ namespace GameLibrary.Core.Services
             this.repo = repo;
         }
 
-        public Task<IEnumerable<MechanicsViewModel>> All(string userId)
+        public async Task<IEnumerable<MechanicsViewModel>> All(string userId)
         {
-            throw new NotImplementedException();
+            var gameMechanics = await repo.All<GameMechanic>().Where(x => x.UserId == userId).ToListAsync();
+
+            return gameMechanics.Select(x => new MechanicsViewModel()
+            {
+                UserId = x.UserId,
+                MechanicDescription = x.MechanicDescription,
+                GameId = x.GameId,
+                GameName = x.GameName
+            });
         }
 
         public async Task CreateGameMechanic(MechanicsFormModel model, string userId)

@@ -17,20 +17,26 @@ namespace GameLibrary.Controllers
 
         private readonly IGameService gameService;
 
+        private readonly ILogger logger;
+
         public GameMechanicsController(
             ICareerService helperService,
             IGameMechanicService mechanicsService,
-            IGameService gameService)
+            IGameService gameService,
+            ILogger<GameMechanicsController> logger)
         {
             this.helperService = helperService;
             this.mechanicsService = mechanicsService;
             this.gameService = gameService;
+            this.logger = logger;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Send()
         {
             if (!await helperService.ExistsById(this.User.Id()))
             {
+                logger.LogInformation("An unclassified User {0} is attempting to send a gamepost developer a message", this.User.Id());
                 TempData[MessageConstant.ErrorMessage] = "You are not a helper";
                 return RedirectToAction("Index", "Home");
             }
@@ -46,18 +52,25 @@ namespace GameLibrary.Controllers
         [HttpPost]
         public async Task<IActionResult> Send(MechanicsFormModel model)
         {
-            if (!await helperService.ExistsById(this.User.Id()))
-            {
-                TempData[MessageConstant.ErrorMessage] = "You are not a helper";
-                return RedirectToAction("Index", "Home");
-            }
-
             if (!ModelState.IsValid)
             {
+                logger.LogInformation("An unclassified User {0} is attempting to send a gamepost developer a message", this.User.Id());
+                ModelState.AddModelError("", "Validation at GameMechanicsController at Send went wrong.");
                 return View(model);
+
             }
 
-            await mechanicsService.CreateGameMechanic(model, this.User.Id());
+            try
+            {
+                await mechanicsService.CreateGameMechanic(model, this.User.Id());
+                TempData[MessageConstant.SuccessMessage] = "Successfully sent!";
+            }
+            catch (Exception ex)
+            {
+                logger.LogInformation(ex, "A send error occured when sending a mechanic report as helper");
+                TempData[MessageConstant.ErrorMessage] = "Unsuccessful!";
+                return View(model);
+            }
 
             return RedirectToAction("All", "Game");
         }
@@ -67,6 +80,7 @@ namespace GameLibrary.Controllers
         {
             if (!await gameService.IsUserDevelepor(this.User.Id()))
             {
+                TempData[MessageConstant.WarningMessage] = "You are not a GamePost Developer!";
                 return RedirectToAction("All", "Game");
             }
 
@@ -78,17 +92,17 @@ namespace GameLibrary.Controllers
         [HttpPost]
         public async Task<IActionResult> Confirmation(int mechanicId)
         {
-
             try
             {
                 await mechanicsService.RemoveMechanicReport(mechanicId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, "An Error occured when deleting a GameMechanic Post with {0} mechanicId", mechanicId);
                 TempData[MessageConstant.ErrorMessage] = "Invalid Attempt";
+                return RedirectToAction(nameof(Service));
             }
             
-
             return RedirectToAction(nameof(Service));
         }
     }

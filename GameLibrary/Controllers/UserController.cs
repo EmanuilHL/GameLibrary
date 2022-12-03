@@ -1,4 +1,5 @@
 ﻿using GameLibrary.Core.Models.User;
+using GameLibrary.Infrastructure.Data.Constants;
 using GameLibrary.Infrastructure.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,16 +16,20 @@ namespace GameLibrary.Controllers
 
         private readonly RoleManager<IdentityRole> roleManager;
 
+        private readonly ILogger logger;
+
         private const string role = "User";
 
         public UserController(
             UserManager<User> _userManager,
             SignInManager<User> _signInManager,
-            RoleManager<IdentityRole> _roleManager)
+            RoleManager<IdentityRole> _roleManager,
+            ILogger<UserController> _logger)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             roleManager = _roleManager;
+            logger = _logger;
         }
         
         [HttpGet]
@@ -47,6 +52,8 @@ namespace GameLibrary.Controllers
         {
             if (!ModelState.IsValid)
             {
+                logger.LogInformation("Register Modelvalidation error");
+                TempData[MessageConstant.WarningMessage] = "Requirements do not apply!";
                 return View(model);
             }
 
@@ -57,6 +64,7 @@ namespace GameLibrary.Controllers
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
+
             if (!await roleManager.RoleExistsAsync(role))
             {
                 var newRole = new IdentityRole { Name = role };
@@ -68,7 +76,7 @@ namespace GameLibrary.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-
+            TempData[MessageConstant.ErrorMessage] = "Could not register";
             foreach (var item in result.Errors)
             {
                 ModelState.AddModelError("", item.Description);
@@ -97,6 +105,8 @@ namespace GameLibrary.Controllers
         {
             if (!ModelState.IsValid)
             {
+                logger.LogInformation("Login Modelvalidation error");
+                TempData[MessageConstant.WarningMessage] = "Requirements do not apply!";
                 return View(model);
             }
 
@@ -113,6 +123,7 @@ namespace GameLibrary.Controllers
             }
 
             ModelState.AddModelError("", "Invalid login");
+            TempData[MessageConstant.ErrorMessage] = "Error occured!";
 
             return View(model);
         }
@@ -120,6 +131,7 @@ namespace GameLibrary.Controllers
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
+            TempData[MessageConstant.SuccessMessage] = "Successfully logged out!";
 
             return RedirectToAction("Index", "Home");
         }

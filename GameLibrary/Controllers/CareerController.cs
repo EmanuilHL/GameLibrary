@@ -12,16 +12,21 @@ namespace GameLibrary.Controllers
     {
         private readonly ICareerService careerService;
 
-        public CareerController(ICareerService careerService)
+        private readonly ILogger logger;
+
+        public CareerController(
+            ICareerService careerService,
+            ILogger<CareerController> logger)
         {
             this.careerService = careerService;
+            this.logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
             if (await careerService.ExistsById(this.User.Id()))
             {
-                TempData[MessageConstant.ErrorMessage] = "You are already a Helper";
+                TempData[MessageConstant.WarningMessage] = "You are already a Helper";
 
                 return RedirectToAction("Index", "Home");
             }
@@ -38,24 +43,28 @@ namespace GameLibrary.Controllers
 
             if (!ModelState.IsValid)
             {
+                ModelState.AddModelError("", "Something faulty occured");
+                logger.LogInformation("Model Validation at Career / Index went wrong");
                 return View(model);
-            }
-
-            if (await careerService.ExistsById(userId))
-            {
-                TempData[MessageConstant.ErrorMessage] = "You are already a Helper";
-
-                return RedirectToAction("Index", "Home");
             }
 
             if (await careerService.HelperWithPhoneNumberExists(model.PhoneNumber))
             {
                 TempData[MessageConstant.ErrorMessage] = "Phonenumber already exists.";
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
             }
 
-            await careerService.CreateHelper(userId, model.PhoneNumber);
+            try
+            {
+                await careerService.CreateHelper(userId, model.PhoneNumber);
+                TempData[MessageConstant.SuccessMessage] = "Successfully became a Helper!";
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Helper could not be created");
+                TempData[MessageConstant.ErrorMessage] = "Unsuccessful!";
+            }
 
             return RedirectToAction("All", "Game");
         }

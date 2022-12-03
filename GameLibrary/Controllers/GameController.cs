@@ -17,9 +17,14 @@ namespace GameLibrary.Controllers
     {
         private readonly IGameService gameService;
 
-        public GameController(IGameService gameService)
+        private readonly ILogger logger;
+
+        public GameController(
+            IGameService gameService,
+            ILogger<GameController> logger)
         {
             this.gameService = gameService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -51,6 +56,7 @@ namespace GameLibrary.Controllers
             {
                 model.Themes = await gameService.GetAllThemes();
                 model.Genres = await gameService.GetAllGenres();
+                logger.LogInformation("Add Model validation error seems to have occured. {0}", model);
                 TempData[MessageConstant.WarningMessage] = "Requirements do not apply";
                 return View(model);
             }
@@ -61,8 +67,9 @@ namespace GameLibrary.Controllers
                 TempData[MessageConstant.SuccessMessage] = "Success!";
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, "AddGame Savechanges was not executed");
                 ModelState.AddModelError("", "Something went wrong");
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
 
@@ -84,8 +91,9 @@ namespace GameLibrary.Controllers
                 TempData[MessageConstant.SuccessMessage] = "Successfully favourited the game!";
                 return RedirectToAction(nameof(Favourites));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, "Marked a game ,with {0} gameId, as favoured went wrong", gameId);
                 ModelState.AddModelError("", "Something went wrong");
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
 
@@ -113,8 +121,10 @@ namespace GameLibrary.Controllers
                 TempData[MessageConstant.SuccessMessage] = "Successfully unfavourited the game!";
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, "Marked a game ,with {0} gameId, as unfavoured went wrong with this userId {1}",
+                    gameId, this.User.Id());
                 ModelState.AddModelError("", "Something went wrong");
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
 
@@ -131,22 +141,19 @@ namespace GameLibrary.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int gameId)
         {
-            //ToDO: Comments and new Idea maybe likes.
-
             try
             {
                 var model = await gameService.ShowDetailsPage(gameId);
-
-
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong");
+                logger.LogError(ex, "Game Id {0} was not found or not taken correctly at the detailsPage", gameId);
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
+
+                return RedirectToAction(nameof(All));
             }
 
-            return Ok();
         }
 
         /// <summary>
@@ -175,6 +182,7 @@ namespace GameLibrary.Controllers
             {
                 model.Themes = await gameService.GetAllThemes();
                 model.Genres = await gameService.GetAllGenres();
+                logger.LogInformation("Edit model validation went wrong. {0}", model);
                 TempData[MessageConstant.WarningMessage] = "Requirements do not apply";
                 return View(model);
             }
@@ -185,10 +193,12 @@ namespace GameLibrary.Controllers
                 TempData[MessageConstant.SuccessMessage] = "Success!";
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 model.Themes = await gameService.GetAllThemes();
                 model.Genres = await gameService.GetAllGenres();
+
+                logger.LogError(ex, "Savechanges at Editpost turned problematic");
 
                 ModelState.AddModelError("", "Something went wrong");
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
@@ -222,7 +232,9 @@ namespace GameLibrary.Controllers
 
             if (!await gameService.CheckIfGameExistsById(gameId))
             {
-                return BadRequest();
+                logger.LogInformation("Deleting a post with {0} gameId could not be found", gameId);
+                TempData[MessageConstant.WarningMessage] = "Request not understood. Reload page.";
+                return View(model);
             }
 
             try
@@ -231,8 +243,9 @@ namespace GameLibrary.Controllers
                 TempData[MessageConstant.SuccessMessage] = "Successfully deleted!";
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, "Error occured when deleting a game with {0} gameId", gameId);
                 TempData[MessageConstant.ErrorMessage] = "Unsuccessful!";
                 return View(model);
             }
@@ -282,16 +295,17 @@ namespace GameLibrary.Controllers
             {
                 await gameService.AddComment(model, gameId, this.User.Id());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError(ex, "Comment with {0} model was not added or not taken correctly with the {1} gameId",
+                    model, gameId);
+                TempData[MessageConstant.ErrorMessage] = "Invalid!";
 
-                throw;
+                return View(model);
             }
 
-            return RedirectToAction(nameof(Details), new { gameId }); 
+            return RedirectToAction(nameof(Details), new { gameId });
         }
-
-
 
         /// <summary>
         /// Likes a post
@@ -306,10 +320,10 @@ namespace GameLibrary.Controllers
             {
                 await gameService.LikePost(gameId, this.User.Id());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex, "Liking a post with {0} gameId turned incorrect", gameId);
+                TempData[MessageConstant.ErrorMessage] = "Invalid!";
             }
 
             return RedirectToAction(nameof(Details), new { gameId });
@@ -327,10 +341,10 @@ namespace GameLibrary.Controllers
             {
                 await gameService.DislikePost(gameId, this.User.Id());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex, "Disliking a post with {0} gameId turned incorrect", gameId);
+                TempData[MessageConstant.ErrorMessage] = "Invalid!";
             }
 
             return RedirectToAction(nameof(Details), new { gameId });

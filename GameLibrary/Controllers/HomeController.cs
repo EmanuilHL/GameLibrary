@@ -1,4 +1,5 @@
 ﻿using GameLibrary.Core.Contracts;
+using GameLibrary.Infrastructure.Data.Constants;
 using GameLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -8,7 +9,7 @@ namespace GameLibrary.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger logger;
 
         private readonly IGameService gameService;
 
@@ -16,7 +17,7 @@ namespace GameLibrary.Controllers
             ILogger<HomeController> logger,
             IGameService gameService)
         {
-            _logger = logger;
+            this.logger = logger;
             this.gameService = gameService;
         }
 
@@ -35,7 +36,9 @@ namespace GameLibrary.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                logger.LogError(ex, "An Error occured when finding the hottest game");
+                TempData[MessageConstant.ErrorMessage] = "Invalid Attempt";
+                return RedirectToAction(nameof(Privacy));
             }
         }
 

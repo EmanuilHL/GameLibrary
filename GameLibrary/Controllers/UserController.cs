@@ -13,12 +13,18 @@ namespace GameLibrary.Controllers
 
         private readonly SignInManager<User> signInManager;
 
+        private readonly RoleManager<IdentityRole> roleManager;
+
+        private const string role = "User";
+
         public UserController(
             UserManager<User> _userManager,
-            SignInManager<User> _signInManager)
+            SignInManager<User> _signInManager,
+            RoleManager<IdentityRole> _roleManager)
         {
             userManager = _userManager;
             signInManager = _signInManager;
+            roleManager = _roleManager;
         }
         
         [HttpGet]
@@ -51,6 +57,12 @@ namespace GameLibrary.Controllers
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                var newRole = new IdentityRole { Name = role };
+                await roleManager.CreateAsync(newRole);
+            }
+            await userManager.AddToRoleAsync(user, role);
 
             if (result.Succeeded)
             {

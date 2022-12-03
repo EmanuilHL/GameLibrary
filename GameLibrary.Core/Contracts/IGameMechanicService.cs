@@ -12,5 +12,8 @@ namespace GameLibrary.Core.Contracts
         Task CreateGameMechanic(MechanicsFormModel model, string userId);
 
         Task<IEnumerable<MechanicsViewModel>> All(string userId);
+
+        Task<IEnumerable<MechanicsViewModel>> Reports();
+        Task RemoveMechanicReport(int mechanicId);
     }
 }

@@ -74,5 +74,22 @@ namespace GameLibrary.Controllers
 
             return View(models);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Confirmation(int mechanicId)
+        {
+
+            try
+            {
+                await mechanicsService.RemoveMechanicReport(mechanicId);
+            }
+            catch (Exception)
+            {
+                TempData[MessageConstant.ErrorMessage] = "Invalid Attempt";
+            }
+            
+
+            return RedirectToAction(nameof(Service));
+        }
     }
 }

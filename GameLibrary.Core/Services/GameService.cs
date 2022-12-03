@@ -676,5 +676,29 @@ namespace GameLibrary.Core.Services
             return await repo.All<Game>().AnyAsync(x => x.UserId == userId);
         }
 
+        /// <summary>
+        /// Gets the gamed created by a certain user.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<GameViewModel>> GetGamesCreatedByUserId(string userId)
+        {
+            return await repo.All<Game>()
+                .Where(x => x.UserId == userId)
+                .Select(g => new GameViewModel()
+                {
+                    Id = g.Id,
+                    Description = g.Description,
+                    ImageUrl = g.ImageUrl,
+                    Rating = g.Rating,
+                    Title = g.Title,
+                    UserId = g.UserId,
+                    Genre = g.Genre.GenreName,
+                    ReviewType = getReviewType(g.Rating).ToString(),
+                    DislikesCount = g.DislikesCount,
+                    LikesCount = g.LikesCount
+                })
+                .ToListAsync();
+        }
     }
 }

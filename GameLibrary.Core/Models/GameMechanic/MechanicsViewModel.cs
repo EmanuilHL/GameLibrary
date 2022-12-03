@@ -17,7 +17,8 @@ namespace GameLibrary.Core.Models.GameMechanic
 
         public string UserId { get; set; } = null!;
 
-
         public int GameId { get; set; }
+
+        public int MechanicId { get; set; }
     }
 }

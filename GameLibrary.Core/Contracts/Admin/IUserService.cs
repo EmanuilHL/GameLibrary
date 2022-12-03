@@ -1,4 +1,5 @@
-﻿using GameLibrary.Infrastructure.Data.Entities;
+﻿using GameLibrary.Core.Models.Admin;
+using GameLibrary.Infrastructure.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace GameLibrary.Core.Contracts.Admin
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> AllUsers();
-        Task<IEnumerable<Helper>> AllHelpers();
+        Task<IEnumerable<UserServiceModel>> AllUsers();
+        Task<IEnumerable<HelperAdminServiceModel>> AllHelpers();
     }
 }

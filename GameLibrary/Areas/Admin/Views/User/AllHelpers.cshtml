@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HelperServiceModel>
+﻿@model IEnumerable<HelperAdminServiceModel>
 
 @{
     ViewBag.Title = "All Helpers";
@@ -12,26 +12,17 @@
         <tr>
             <th><label>HelperId</label></th>
             <th><label>Phone Number</label></th>
-            <th><label>HasPhone?</label></th>
             <th><label>UserId</label></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var helper in Model)
+        @foreach (var user in Model)
         {
             <tr>
-                @*<td><label>@helper.</label></td>*@
-               @* //<td><label>@helper.PhoneNumber</label></td>*@
-                <td>
-                    @if (string.IsNullOrEmpty(helper.PhoneNumber) == false)
-                    {
-                        <label>✔</label>
-                    }
-                    else
-                    {
-                        <label class="text-center">❌</label>
-                    }
-                </td>
+                <td><label>@user.HelperId</label></td>
+                <td><label>@user.PhoneNumber</label></td>
+                <td><label>@user.UserId</label></td>
+                
                 @*<td>
             <form asp-area="Admin" asp-controller="User" asp-action="Forget" method="post">
             <input type="hidden" value="@user.UserId">

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<MechanicsViewModel>
 
 @{
-    ViewBag.Title = "Requests by Helpers for Develepors";
+    ViewBag.Title = "Requests Viewing for Admins";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -9,10 +9,12 @@
 
 
 <div class="text-center row">
-    @if(Model.Count() == 0){
+    @if (Model.Count() == 0)
+    {
         <h3>No reports so far.</h3>
     }
-    else{
+    else
+    {
         @foreach (var gameMechanic in Model)
         {
             <div class="card col-4" style="width: 20rem; ">
@@ -23,7 +25,7 @@
                 </div>
 
                 <a class="btn btn-dark" asp-controller="Game" asp-action="Details"
-                asp-route-gameId="@gameMechanic.GameId">View suggested Game</a>
+                  asp-route-gameId="@gameMechanic.GameId">View suggested Game</a>
 
                 <form method="post" asp-controller="GameMechanics" asp-action="Confirmation" asp-route-mechanicId="@gameMechanic.MechanicId">
                     <input type="submit" value="Mark as Read" class="btn btn-outline-danger" />
@@ -31,5 +33,4 @@
             </div>
         }
     }
-    
 </div>

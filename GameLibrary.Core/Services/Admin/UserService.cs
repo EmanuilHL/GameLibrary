@@ -20,10 +20,10 @@ namespace GameLibrary.Core.Services.Admin
             repo = _repo;
         }
 
-        public async Task<IEnumerable<Helper>> AllHelpers()
+        public async Task<IEnumerable<HelperAdminServiceModel>> AllHelpers()
         {
-            return (IEnumerable<Helper>)await repo.AllReadonly<Helper>()
-                .Select(x => new HelperServiceModel()
+            return await repo.AllReadonly<Helper>()
+                .Select(x => new HelperAdminServiceModel()
                 {
                     HelperId = x.Id,
                     PhoneNumber = x.PhoneNumber,
@@ -31,9 +31,9 @@ namespace GameLibrary.Core.Services.Admin
                 }).ToListAsync();
         }
 
-        public async Task<IEnumerable<User>> AllUsers()
+        public async Task<IEnumerable<UserServiceModel>> AllUsers()
         {
-            return (IEnumerable<User>)await repo.AllReadonly<User>()
+            return await repo.AllReadonly<User>()
                 .Select(x => new UserServiceModel()
                 {
                     Email = x.Email,

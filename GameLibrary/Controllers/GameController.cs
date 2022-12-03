@@ -1,4 +1,5 @@
-﻿using GameLibrary.Core.Contracts;
+﻿using GameLibrary.Areas.Admin.Constants;
+using GameLibrary.Core.Contracts;
 using GameLibrary.Core.Models;
 using GameLibrary.Core.Models.Game;
 using GameLibrary.Extensions;
@@ -7,16 +8,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static GameLibrary.Areas.Admin.Constants.AdminConstants;
 
 namespace GameLibrary.Controllers
 {
     [Authorize]
     public class GameController : Controller
     {
-        /// <summary>
-        /// Idea: Its YOUR gamelibrary. es macht mehr sinn. Since you add games you played or just add games for the future
-        /// and add favourites
-        /// </summary>
         private readonly IGameService gameService;
 
         public GameController(IGameService gameService)
@@ -209,6 +207,7 @@ namespace GameLibrary.Controllers
         {
             var model = await gameService.GetGameToDelete(gameId);
 
+
             return View(model);
         }
 
@@ -238,18 +237,6 @@ namespace GameLibrary.Controllers
                 return View(model);
             }
         }
-
-
-        //[HttpGet]
-        //public async Task<IActionResult> Search()
-        //{
-        //    var model = new GameViewModel()
-        //    {
-        //        Themes = await gameService.GetAllThemes()
-        //    };
-
-        //    return View(model);
-        //}
 
         /// <summary>
         /// Searches for a game.
@@ -348,12 +335,6 @@ namespace GameLibrary.Controllers
 
             return RedirectToAction(nameof(Details), new { gameId });
         }
-
-        //Tempdata from toastr doesnt work.
-        //public async Task<IActionResult> Responses()
-        //{
-
-        //}
     }
 }
 

@@ -41,5 +41,7 @@ namespace GameLibrary.Core.Contracts
         Task DislikePost(int gameId, string userId);
 
         Task<bool> IsUserDevelepor(string userId);
+
+        Task<IEnumerable<GameViewModel>> GetGamesCreatedByUserId(string userId);
     }
 }

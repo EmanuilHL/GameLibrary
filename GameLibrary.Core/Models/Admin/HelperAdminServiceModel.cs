@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GameLibrary.Core.Models.Admin
 {
-    public class HelperServiceModel
+    public class HelperAdminServiceModel
     {
         public int HelperId { get; set; }
 

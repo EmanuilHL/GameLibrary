@@ -4,10 +4,14 @@
 @{
     ViewBag.Title = "Game Details";
     ViewBag.SecondTitle = "Comment section";
+    ViewBag.Description = "If you want to delete this post, then contact the administrator under this email project@mail.com";
+    ViewBag.Advisement = "For the sake of the project, just turn admin using the admin mail and password and delete it";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
+<p><b>@ViewBag.Description</b></p>
+<p>@ViewBag.Advisement</p>
 
 <div class="container" style="display:inline">
     <div class="row">
@@ -56,7 +60,10 @@
                     @if(this.User.Id() == Model.UserId)
                     {
                         <a class="btn btn-warning" asp-controller="Game" asp-action="Edit" asp-route-gameId="@Model.Id">Edit</a>
-                        <a class="ml-2 btn btn-danger" asp-controller="Game" asp-action="Delete" asp-route-gameId="@Model.Id">Delete</a>
+                        if (User.IsInRole(AdminRole))
+                        {
+                            <a class="ml-2 btn btn-danger" asp-controller="Game" asp-action="Delete" asp-route-gameId="@Model.Id">Delete</a>
+                        }
                     }
 
                    <form method="post" asp-controller="Game" asp-action="MarkAsFavourite" asp-route-gameId="@Model.Id">

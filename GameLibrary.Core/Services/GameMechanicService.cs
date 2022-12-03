@@ -2,6 +2,7 @@
 using GameLibrary.Core.Models.GameMechanic;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,11 @@ namespace GameLibrary.Core.Services
             this.repo = repo;
         }
 
+        /// <summary>
+        /// Gets all the game mechanic reports for one developer
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<MechanicsViewModel>> All(string userId)
         {
             var gameMechanics = await repo.All<GameMechanic>().Where(x => x.UserId == userId).ToListAsync();
@@ -29,10 +35,18 @@ namespace GameLibrary.Core.Services
                 UserId = x.UserId,
                 MechanicDescription = x.MechanicDescription,
                 GameId = x.GameId,
-                GameName = x.GameName
+                GameName = x.GameName,
+                MechanicId = x.Id
             });
         }
 
+        /// <summary>
+        /// creates a mechanic
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public async Task CreateGameMechanic(MechanicsFormModel model, string userId)
         {
             var game = await FindGameByName(model.GameName);
@@ -57,6 +71,34 @@ namespace GameLibrary.Core.Services
             
             await repo.AddAsync(entity);
             await repo.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Deletes a gamemechanic record from the database
+        /// </summary>
+        /// <param name="mechanicId"></param>
+        /// <returns></returns>
+        public async Task RemoveMechanicReport(int mechanicId)
+        {
+            await repo.DeleteAsync<GameMechanic>(mechanicId);
+            await repo.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Sends all the game mechanics reports to the admin
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<MechanicsViewModel>> Reports()
+        {
+            return await repo.AllReadonly<GameMechanic>()
+                .Select(x => new MechanicsViewModel()
+                {
+                    MechanicDescription = x.MechanicDescription,
+                    GameId = x.GameId,
+                    GameName = x.GameName,
+                    UserId = x.UserId
+                })
+                .ToListAsync();
         }
 
         /// <summary>

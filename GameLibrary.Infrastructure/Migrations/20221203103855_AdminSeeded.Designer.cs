@@ -4,6 +4,7 @@ using GameLibrary.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameLibrary.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221203103855_AdminSeeded")]
+    partial class AdminSeeded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,14 +214,6 @@ namespace GameLibrary.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Helpers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 3,
-                            PhoneNumber = "+359134554324",
-                            UserId = "85601b02-9a83-47d0-b4a2-fcd5c6c16f1e"
-                        });
                 });
 
             modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.Theme", b =>
@@ -336,15 +330,15 @@ namespace GameLibrary.Infrastructure.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4479dad0-55dc-4161-8b08-b3c530d729ae",
+                            ConcurrencyStamp = "235cbfc6-c265-47b9-879c-06ebd8eea827",
                             Email = "agent@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "AGENT@MAIL.COM",
                             NormalizedUserName = "PESHO",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHu6SKWAQ9NmF2fFJeEWJpC32ScvReoRFBqGkr6yH14z/g3yD0M5+h4wjOC+Q107fA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEgeWQ7ShfxkIAtY9dd88GmIpHD+YaCozpC4cCtozhLQROq20sZQZhHY9Zw3iC/isg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c820215a-4908-4d15-bb8b-eae6dd36a4a8",
+                            SecurityStamp = "94444fb9-7a51-4aac-b981-4994a2faf7fc",
                             TwoFactorEnabled = false,
                             UserName = "pesho"
                         },
@@ -352,15 +346,15 @@ namespace GameLibrary.Infrastructure.Migrations
                         {
                             Id = "85601b02-9a83-47d0-b4a2-fcd5c6c16f1e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "879dd0e3-42c4-477e-a4db-2687156d277b",
+                            ConcurrencyStamp = "9d79ca62-d41d-4dec-987c-88d43dd4d248",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMZVm6X6hrSbLjpsK2c2DnMWA0l8E/q0nP7dE5n25R55Qo0wfFGB8r4+OvZ/ISJWFQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIXdBU0dcsFYUjNBRys79BwlY+cxy99eNoAvE4o/qtHyWbzjqVvepmzy+E7P7TxZbQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "721b9877-5d18-455e-8c65-c64dd3d56d82",
+                            SecurityStamp = "eb95f97d-8b93-4754-a855-268b307c7bef",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         });

@@ -9,7 +9,7 @@ namespace GameLibrary.Core.Contracts
     public interface ICareerService
     {
         Task<bool> ExistsById(string userId);
-        Task<bool> UserWithPhoneNumberExists(string phoneNumber);
+        Task<bool> HelperWithPhoneNumberExists(string phoneNumber);
         Task CreateHelper(string userId, string phoneNumber);
     }
 }

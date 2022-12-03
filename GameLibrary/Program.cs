@@ -1,3 +1,4 @@
+using GameLibrary.Core.Extensions;
 using GameLibrary.Extensions;
 using GameLibrary.Infrastructure.Data;
 using GameLibrary.Infrastructure.Data.Entities;
@@ -18,6 +19,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireNonAlphanumeric = false;
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -36,6 +38,7 @@ builder.Services.AddApplicationServices();
 //Add Security mesures. Watch Security Lecture. Add them when all code logic is completed.
 
 var app = builder.Build();
+app.SeedAdmin();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -57,9 +60,18 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+
+    endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+
+    app.MapRazorPages();
+});
 
 app.Run();

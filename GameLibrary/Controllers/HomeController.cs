@@ -2,6 +2,7 @@
 using GameLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using static GameLibrary.Areas.Admin.Constants.AdminConstants;
 
 namespace GameLibrary.Controllers
 {
@@ -21,6 +22,11 @@ namespace GameLibrary.Controllers
 
         public async Task<IActionResult> Index()
         {
+            if (User.IsInRole(AdminRole))
+            {
+                return RedirectToAction("Index", "Admin", new { area = AreaName });
+            }
+
             try
             {
                 var model = await gameService.FindHottestGame();

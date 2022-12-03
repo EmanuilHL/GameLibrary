@@ -1,6 +1,7 @@
 ﻿using GameLibrary.Core.Contracts;
 using GameLibrary.Core.Models.GameMechanic;
 using GameLibrary.Extensions;
+using GameLibrary.Infrastructure.Data.Constants;
 using GameLibrary.Infrastructure.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,7 @@ namespace GameLibrary.Controllers
         {
             if (!await helperService.ExistsById(this.User.Id()))
             {
+                TempData[MessageConstant.ErrorMessage] = "You are not a helper";
                 return RedirectToAction("Index", "Home");
             }
 
@@ -46,6 +48,7 @@ namespace GameLibrary.Controllers
         {
             if (!await helperService.ExistsById(this.User.Id()))
             {
+                TempData[MessageConstant.ErrorMessage] = "You are not a helper";
                 return RedirectToAction("Index", "Home");
             }
 

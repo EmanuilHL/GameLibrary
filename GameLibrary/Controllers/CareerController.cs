@@ -48,7 +48,7 @@ namespace GameLibrary.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (await careerService.UserWithPhoneNumberExists(model.PhoneNumber))
+            if (await careerService.HelperWithPhoneNumberExists(model.PhoneNumber))
             {
                 TempData[MessageConstant.ErrorMessage] = "Phonenumber already exists.";
 

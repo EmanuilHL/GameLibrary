@@ -36,6 +36,20 @@ namespace GameLibrary.Infrastructure.Data.Configuration
 
             users.Add(user);
 
+            user = new User()
+            {
+                Id = "85601b02-9a83-47d0-b4a2-fcd5c6c16f1e",
+                UserName = "admin@mail.com",
+                NormalizedUserName = "ADMIN@MAIL.COM",
+                Email = "admin@mail.com",
+                NormalizedEmail = "ADMIN@MAIL.COM"
+            };
+
+            user.PasswordHash =
+                 hasher.HashPassword(user, "admin123");
+
+            users.Add(user);
+
             return users;
         }
     }

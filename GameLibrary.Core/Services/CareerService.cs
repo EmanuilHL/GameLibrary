@@ -36,7 +36,7 @@ namespace GameLibrary.Core.Services
             return await repo.All<Helper>().AnyAsync(x => x.UserId == userId);
         }
 
-        public async Task<bool> UserWithPhoneNumberExists(string phoneNumber)
+        public async Task<bool> HelperWithPhoneNumberExists(string phoneNumber)
         {
             return await repo.All<Helper>().AnyAsync(x => x.PhoneNumber == phoneNumber);
         }

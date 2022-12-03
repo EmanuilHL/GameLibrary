@@ -1,12 +1,13 @@
 ﻿using GameLibrary.Infrastructure.Data.Configuration;
 using GameLibrary.Infrastructure.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 
 namespace GameLibrary.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -44,6 +45,7 @@ namespace GameLibrary.Infrastructure.Data
             //fix that
 
             builder.ApplyConfiguration(new UserConfiguration());
+            builder.ApplyConfiguration(new HelperConfiguration());
             builder.ApplyConfiguration(new GenreConfiguration());
             builder.ApplyConfiguration(new ThemeConfiguration());
             //builder.ApplyConfiguration(new CommentConfiguration());

@@ -1,4 +1,5 @@
-﻿using GameLibrary.Infrastructure.Data.Entities;
+﻿using GameLibrary.Core.Contracts;
+using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.Infrastructure.Data.Entities.Enums;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace GameLibrary.Core.Models.Game
 	/// Make the model view.
 	/// its just to show the users and guests what games there are, so it doesn't require any validations.
 	/// </summary>
-	public class GameViewModel
+	public class GameViewModel : IGameModel
 	{
 		public int Id { get; set; }
 
@@ -23,8 +24,6 @@ namespace GameLibrary.Core.Models.Game
 		public string Description { get; set; } = null!;
 
         public decimal Rating { get; set; }
-        public decimal BaseRating { get; set; }
-		public bool IsFirst { get; set; }
 
         public string ImageUrl { get; set; } = null!;
 

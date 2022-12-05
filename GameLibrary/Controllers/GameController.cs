@@ -139,7 +139,7 @@ namespace GameLibrary.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Details(int gameId)
+        public async Task<IActionResult> Details(int gameId, string information)
         {
             try
             {

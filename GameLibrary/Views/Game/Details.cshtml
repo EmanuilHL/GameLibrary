@@ -10,8 +10,8 @@
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
-<p><b>@ViewBag.Description</b></p>
-<p>@ViewBag.Advisement</p>
+<p class="text-center"><b>@ViewBag.Description</b></p>
+<p class="text-center">@ViewBag.Advisement</p>
 
 <div class="container" style="display:inline">
     <div class="row">
@@ -63,6 +63,9 @@
                         if (User.IsInRole(AdminRole))
                         {
                             <a class="ml-2 btn btn-danger" asp-controller="Game" asp-action="Delete" asp-route-gameId="@Model.Id">Delete</a>
+                        }
+                        else{
+                            <input type="button" class="btn-outline-secondary" disabled="disabled" value="Contact Admin"/>
                         }
                     }
 

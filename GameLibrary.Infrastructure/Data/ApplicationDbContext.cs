@@ -9,9 +9,21 @@ namespace GameLibrary.Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        private bool dbseed;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, bool seed = true)
             : base(options)
         {
+            if (this.Database.IsRelational())
+            {
+                this.Database.Migrate();
+            }
+            else
+            {
+                this.Database.EnsureCreated();
+            }
+
+            dbseed = seed;
         }
 
         //public DbSet<Comment> Comments { get; set; }
@@ -38,16 +50,21 @@ namespace GameLibrary.Infrastructure.Data
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
-            //Introducing FOREIGN KEY constraint 'FK_GameComment_Games_GameId'
-            //on table 'GameComment' may cause cycles or multiple cascade paths.
-            //Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints
 
-            //fix that
+            //Look to test this
+            builder.Entity<Comment>()
+                .HasOne(d => d.Game)
+                .WithMany(b => b.Comments)
+                .HasForeignKey(w => w.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.ApplyConfiguration(new UserConfiguration());
-            builder.ApplyConfiguration(new HelperConfiguration());
-            builder.ApplyConfiguration(new GenreConfiguration());
-            builder.ApplyConfiguration(new ThemeConfiguration());
+            if (this.dbseed)
+            {
+                builder.ApplyConfiguration(new UserConfiguration());
+                builder.ApplyConfiguration(new HelperConfiguration());
+                builder.ApplyConfiguration(new GenreConfiguration());
+                builder.ApplyConfiguration(new ThemeConfiguration());
+            }
             //builder.ApplyConfiguration(new CommentConfiguration());
 
             base.OnModelCreating(builder);

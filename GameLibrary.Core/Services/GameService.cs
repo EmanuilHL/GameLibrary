@@ -197,10 +197,15 @@ namespace GameLibrary.Core.Services
                     ReviewType = getReviewType(x.Rating).ToString(),
                     UserId = x.UserId,
                     LikesCount = x.LikesCount,
-                    DislikesCount = x.DislikesCount
+                    DislikesCount = x.DislikesCount,
+                    Description = x.Description
                 })
                 .FirstOrDefaultAsync();
 
+            if (game == null)
+            {
+                throw new ArgumentException("the hottest game is null");
+            }
 
             return game;
         }

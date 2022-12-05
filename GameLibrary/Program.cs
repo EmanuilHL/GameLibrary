@@ -4,6 +4,7 @@ using GameLibrary.Infrastructure.Data;
 using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.ModelBinders;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddControllersWithViews().AddMvcOptions(options =>
 {
+    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
     options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
 });
 
@@ -71,6 +73,11 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    endpoints.MapControllerRoute(
+      name: "gameDetails",
+      pattern: "Game/Details/{gameId}/{information}"
+    );
 
     app.MapRazorPages();
 });

@@ -14,7 +14,7 @@
         <p></p>
         <h5 class="text-center">
             <a class="btn btn-primary" asp-controller="Game" asp-action="Details"
-           asp-route-gameId="@Model.Id"> @Model.Title</a>
+           asp-route-gameId="@Model.Id" asp-route-information="@Model.GetInformation()"> @Model.Title</a>
         </h5>
 
     </section>

@@ -43,5 +43,7 @@ namespace GameLibrary.Core.Contracts
         Task<bool> IsUserDevelepor(string userId);
 
         Task<IEnumerable<GameViewModel>> GetGamesCreatedByUserId(string userId);
+
+        Task<CommentViewModel> GetGameById(int gameId);
     }
 }

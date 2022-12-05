@@ -1,6 +1,7 @@
 ﻿using GameLibrary.Core.Models.User;
 using GameLibrary.Infrastructure.Data.Constants;
 using GameLibrary.Infrastructure.Data.Entities;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,7 @@ namespace GameLibrary.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
             if (!ModelState.IsValid)
             {
                 logger.LogInformation("Register Modelvalidation error");
@@ -59,11 +61,11 @@ namespace GameLibrary.Controllers
 
             var user = new User()
             {
-                Email = model.Email,
-                UserName = model.UserName
+                Email = sanitizer.Sanitize(model.Email),
+                UserName = sanitizer.Sanitize(model.UserName)
             };
 
-            var result = await userManager.CreateAsync(user, model.Password);
+            var result = await userManager.CreateAsync(user, sanitizer.Sanitize(model.Password));
 
             if (!await roleManager.RoleExistsAsync(role))
             {
@@ -103,6 +105,7 @@ namespace GameLibrary.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
             if (!ModelState.IsValid)
             {
                 logger.LogInformation("Login Modelvalidation error");
@@ -114,7 +117,7 @@ namespace GameLibrary.Controllers
 
             if (user != null)
             {
-                var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                var result = await signInManager.PasswordSignInAsync(user, sanitizer.Sanitize(model.Password), false, false);
 
                 if (result.Succeeded)
                 {

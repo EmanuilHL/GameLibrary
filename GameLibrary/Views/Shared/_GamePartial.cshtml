@@ -12,7 +12,7 @@
 
             <p>Genre: @Model.Genre</p>
 
-            <a asp-controller="Game" asp-action="Details" asp-route-gameId="@Model.Id"
+            <a asp-controller="Game" asp-action="Details" asp-route-gameId="@Model.Id" asp-route-information="@Model.GetInformation()"
                class="btn btn-success">Details</a>
         </div>
     </div>

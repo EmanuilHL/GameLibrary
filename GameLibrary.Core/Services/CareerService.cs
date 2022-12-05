@@ -1,6 +1,7 @@
 ﻿using GameLibrary.Core.Contracts;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
+using Ganss.Xss;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,11 @@ namespace GameLibrary.Core.Services
 
         public async Task CreateHelper(string userId, string phoneNumber)
         {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
             var helper = new Helper()
             {
                 UserId = userId,
-                PhoneNumber = phoneNumber
+                PhoneNumber = sanitizer.Sanitize(phoneNumber)
             };
 
             await repo.AddAsync(helper);

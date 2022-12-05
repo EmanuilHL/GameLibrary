@@ -5,9 +5,16 @@ using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//builder.Host.ConfigureServices((context, services) =>
+//{
+//    services.Configure<KestrelServerOptions>(
+//        context.Configuration.GetSection("Kestrel"));
+//});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -23,10 +30,23 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+//builder.Services.AddStackExchangeRedisCache(options =>
+//{
+//    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+//});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true;
     options.LoginPath = "/User/Login";
     options.LogoutPath = "/User/Logout";
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NoAJAXRequests", builder => builder.WithOrigins("https://localhost:7189"));
 });
 
 builder.Services.AddControllersWithViews().AddMvcOptions(options =>
@@ -36,9 +56,7 @@ builder.Services.AddControllersWithViews().AddMvcOptions(options =>
 });
 
 builder.Services.AddApplicationServices();
-
-
-//Add Security mesures. Watch Security Lecture. Add them when all code logic is completed.
+//builder.Services.AddResponseCaching();
 
 var app = builder.Build();
 app.SeedAdmin();
@@ -55,6 +73,7 @@ else
     app.UseHsts();
 }
 
+app.UseCors("NoAJAXRequests");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -81,5 +100,6 @@ app.UseEndpoints(endpoints =>
 
     app.MapRazorPages();
 });
+//app.UseResponseCaching();
 
 app.Run();

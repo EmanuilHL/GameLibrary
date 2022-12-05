@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static GameLibrary.Areas.Admin.Constants.AdminConstants;
+using GameLibrary.Core.Extensions;
 
 namespace GameLibrary.Controllers
 {
@@ -141,9 +142,24 @@ namespace GameLibrary.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int gameId, string information)
         {
+            if (!await gameService.CheckIfGameExistsById(gameId))
+            {
+                logger.LogError("Game cant be acquired thru gameId at DetailsPage.");
+                TempData[MessageConstant.ErrorMessage] = "Game not found";
+                return RedirectToAction(nameof(All));
+            }
+
             try
             {
                 var model = await gameService.ShowDetailsPage(gameId);
+
+                if (information != model.GetInformation())
+                {
+                    logger.LogInformation("User {0} with UserId is Parameter tampering.", this.User.Id());
+                    TempData[MessageConstant.ErrorMessage] = "Wrong Info";
+                    return RedirectToAction(nameof(All));
+                }
+
                 return View(model);
             }
             catch (Exception ex)
@@ -276,7 +292,14 @@ namespace GameLibrary.Controllers
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Comment(int gameId)
-        { 
+        {
+            if (!await gameService.CheckIfGameExistsById(gameId))
+            {
+                logger.LogInformation("Commenting a post with {0} gameId could not be found", gameId);
+                TempData[MessageConstant.WarningMessage] = "Request not understood. Reload page.";
+                return RedirectToAction(nameof(All));
+            }
+
             var model = await gameService.GetCommentView(gameId, this.User.Id());
 
             return View(model);
@@ -304,7 +327,19 @@ namespace GameLibrary.Controllers
                 return View(model);
             }
 
-            return RedirectToAction(nameof(Details), new { gameId });
+            try
+            {
+                var newModel = await gameService.GetGameById(gameId);
+
+                return RedirectToAction(nameof(Details), new { gameId = gameId, information = newModel.GetInformation() });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Post is null with Id {0} at details page.", gameId);
+                TempData[MessageConstant.ErrorMessage] = "Invalid!";
+            }
+
+            return RedirectToAction(nameof(All));
         }
 
         /// <summary>
@@ -316,9 +351,17 @@ namespace GameLibrary.Controllers
         [HttpPost]
         public async Task<IActionResult> Like(int gameId)
         {
+            if (!await gameService.CheckIfGameExistsById(gameId))
+            {
+                logger.LogInformation("Liking a post with {0} gameId could not be found", gameId);
+                TempData[MessageConstant.WarningMessage] = "Request not understood. Reload page.";
+                return View(nameof(All));
+            }
+
             try
             {
                 await gameService.LikePost(gameId, this.User.Id());
+                
             }
             catch (Exception ex)
             {
@@ -326,7 +369,19 @@ namespace GameLibrary.Controllers
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
             }
 
-            return RedirectToAction(nameof(Details), new { gameId });
+            try
+            {
+                var model = await gameService.GetGameById(gameId);
+                return RedirectToAction(nameof(Details), new { gameId = gameId, information = model.GetInformation() });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Post is null with Id {0} at details page.", gameId);
+                TempData[MessageConstant.ErrorMessage] = "Invalid!";
+            }
+
+            //If it goes here, then something went wrong.
+            return RedirectToAction(nameof(All));
         }
 
         /// <summary>
@@ -337,17 +392,37 @@ namespace GameLibrary.Controllers
         [HttpPost]
         public async Task<IActionResult> Dislike(int gameId)
         {
+            if (!await gameService.CheckIfGameExistsById(gameId))
+            {
+                logger.LogInformation("Disliking a post with {0} gameId could not be found", gameId);
+                TempData[MessageConstant.WarningMessage] = "Request not understood. Reload page.";
+                return View(nameof(All));
+            }
+
             try
             {
                 await gameService.DislikePost(gameId, this.User.Id());
+
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Disliking a post with {0} gameId turned incorrect", gameId);
+                logger.LogError(ex, "Dislking a post with {0} gameId turned incorrect", gameId);
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
             }
 
-            return RedirectToAction(nameof(Details), new { gameId });
+            try
+            {
+                var model = await gameService.GetGameById(gameId);
+                return RedirectToAction(nameof(Details), new { gameId = gameId, information = model.GetInformation() });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Post is null with Id {0} at details page.", gameId);
+                TempData[MessageConstant.ErrorMessage] = "Invalid!";
+            }
+
+            //If it goes here, then something went wrong.
+            return RedirectToAction(nameof(All));
         }
     }
 }

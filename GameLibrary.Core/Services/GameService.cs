@@ -4,6 +4,7 @@ using GameLibrary.Core.Models.Game;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.Infrastructure.Data.Entities.Enums;
+using Ganss.Xss;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,14 +31,15 @@ namespace GameLibrary.Core.Services
         /// <exception cref="NotImplementedException"></exception>
         public async Task AddGameAsync(GameFormViewModel model, string id)
         {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
             var entity = new Game()
             {
-                Description = model.Description,
+                Description = sanitizer.Sanitize(model.Description),
                 ThemeId = model.ThemeId,
                 GenreId = model.GenreId,
-                ImageUrl = model.ImageUrl,
+                ImageUrl = sanitizer.Sanitize(model.ImageUrl),
                 Rating = model.Rating,
-                Title = model.Title,
+                Title = sanitizer.Sanitize(model.Title),
                 UserId = id
             };
 
@@ -249,15 +251,16 @@ namespace GameLibrary.Core.Services
         /// <returns></returns>
         public async Task EditGameAsync(GameFormViewModel model)
         {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
             var entity = await repo.GetByIdAsync<Game>(model.Id);
 
             entity.Id = model.Id;
-            entity.Description = model.Description;
+            entity.Description = sanitizer.Sanitize(model.Description);
             entity.GenreId = model.GenreId;
             entity.ThemeId = model.ThemeId;
-            entity.ImageUrl = model.ImageUrl;
+            entity.ImageUrl = sanitizer.Sanitize(model.ImageUrl);
             entity.Rating = model.Rating;
-            entity.Title = model.Title;
+            entity.Title = sanitizer.Sanitize(model.Title);
             entity.UserId = model.UserId;
 
             await repo.SaveChangesAsync();
@@ -472,6 +475,7 @@ namespace GameLibrary.Core.Services
 
         public async Task AddComment(CommentPostModel model, int gameId, string userId)
         {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
             var game = await repo.All<Game>().FirstOrDefaultAsync(x => x.Id == gameId);
             var user = await repo.All<User>().FirstOrDefaultAsync(x => x.Id == userId);
 
@@ -487,7 +491,7 @@ namespace GameLibrary.Core.Services
 
             var comment = new Comment()
             {
-                Description = model.CommentDescription,
+                Description = sanitizer.Sanitize(model.CommentDescription),
                 Id = model.CommentId,
                 UserId = userId,
                 User = user
@@ -704,6 +708,38 @@ namespace GameLibrary.Core.Services
                     LikesCount = g.LikesCount
                 })
                 .ToListAsync();
+        }
+
+        public async Task<CommentViewModel> GetGameById(int gameId)
+        {
+            var game = await repo.All<Game>()
+                .Where(g => g.Id == gameId)
+                .Select(x => new CommentViewModel()
+                {
+                    Title = x.Title,
+                    Description = x.Description,
+                    Rating = x.Rating,
+                    ImageUrl = x.ImageUrl,
+                    Genre = x.Genre.GenreName,
+                    ReviewType = getReviewType(x.Rating).ToString(),
+                    Id = gameId,
+                    UserId = x.UserId,
+                    LikesCount = x.LikesCount,
+                    DislikesCount = x.DislikesCount,
+                    Comments = x.Comments.Select(i => new CommentFormModel()
+                    {
+                        CommentDescription = i.Description,
+                        CommentId = i.Id,
+                        UserName = i.User.UserName,
+                    }).ToList()
+                }).FirstOrDefaultAsync();
+
+            if (game == null)
+            {
+                throw new ArgumentException("game is null");
+            }
+
+            return game;
         }
     }
 }

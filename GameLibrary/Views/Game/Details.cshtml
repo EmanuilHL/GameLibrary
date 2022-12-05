@@ -26,10 +26,10 @@
                 {
                     <section>
                         <h5><b>Do you like this post?</b></h5>
-                        <form method="post" asp-controller="Game" asp-action="Like" asp-route-gameId="@Model.Id">
+                        <form method="post" asp-controller="Game" asp-action="Like" asp-route-gameId="@Model.Id" asp-route-information="@Model.GetInformation()">
                             <input class="ml-2 btn btn-success" type="submit" value="Like @Model.LikesCount" />
                         </form>
-                        <form method="post" asp-controller="Game" asp-action="Dislike" asp-route-gameId="@Model.Id">
+                        <form method="post" asp-controller="Game" asp-action="Dislike" asp-route-gameId="@Model.Id" asp-route-information="@Model.GetInformation()">
                             <input class="ml-2 btn btn-danger" type="submit" value="Dislike @Model.DislikesCount" />
                         </form>
                     </section>
@@ -73,7 +73,7 @@
                         <input class="ml-2 btn btn-success" type="submit" value="Favourite" />
                    </form>
 
-                   <a class="ml-2 btn btn-primary" asp-controller="Game" asp-action="Comment" asp-route-gameId="@Model.Id">Comment</a>
+                    <a class="ml-2 btn btn-primary" asp-controller="Game" asp-action="Comment" asp-route-gameId="@Model.Id" asp-route-information="@Model.GetInformation()">Comment</a>
                     
                 }
             </div>

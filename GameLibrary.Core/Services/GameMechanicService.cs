@@ -2,6 +2,7 @@
 using GameLibrary.Core.Models.GameMechanic;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -49,6 +50,7 @@ namespace GameLibrary.Core.Services
         /// <exception cref="ArgumentException"></exception>
         public async Task CreateGameMechanic(MechanicsFormModel model, string userId)
         {
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
             var game = await FindGameByName(model.GameName);
 
             if (game == null)
@@ -63,8 +65,8 @@ namespace GameLibrary.Core.Services
 
             var entity = new GameMechanic()
             {
-                MechanicDescription = model.MechanicDescription,
-                GameName = model.GameName,
+                MechanicDescription = sanitizer.Sanitize(model.MechanicDescription),
+                GameName = sanitizer.Sanitize(model.GameName),
                 GameId = game.Id,
                 UserId = userId
             };

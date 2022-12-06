@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Host.ConfigureServices((context, services) =>
-//{
-//    services.Configure<KestrelServerOptions>(
-//        context.Configuration.GetSection("Kestrel"));
-//});
+builder.Host.ConfigureServices((context, services) =>
+{
+    services.Configure<KestrelServerOptions>(
+        context.Configuration.GetSection("Kestrel"));
+});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

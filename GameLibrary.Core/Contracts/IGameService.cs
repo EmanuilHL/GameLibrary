@@ -45,5 +45,7 @@ namespace GameLibrary.Core.Contracts
         Task<IEnumerable<GameViewModel>> GetGamesCreatedByUserId(string userId);
 
         Task<CommentViewModel> GetGameById(int gameId);
+
+        Task RemoveGameCommentById(int commentId, int gameId);
     }
 }

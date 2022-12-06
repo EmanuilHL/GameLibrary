@@ -424,6 +424,40 @@ namespace GameLibrary.Controllers
             //If it goes here, then something went wrong.
             return RedirectToAction(nameof(All));
         }
+
+        /// <summary>
+        /// Removes a desired comment by Id
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> RemoveComment(int commentId, int gameId)
+        {
+            if (!await gameService.CheckIfGameExistsById(gameId))
+            {
+                logger.LogInformation("Removing a comment with commentId {0} on post with {1} gameId could not be found", 
+                    commentId ,gameId);
+                TempData[MessageConstant.WarningMessage] = "Request not understood. Reload page.";
+                return View(nameof(All));
+            }
+
+            try
+            {
+                await gameService.RemoveGameCommentById(commentId, gameId);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Removing a comment with commentId {0} on post with {1} gameId could" +
+                    " not be found", gameId, commentId);
+                TempData[MessageConstant.ErrorMessage] = "Invalid!";
+            }
+
+            var model = await gameService.ShowDetailsPage(gameId);
+
+            return RedirectToAction(nameof(Details), new { gameId = gameId, information = model.GetInformation() });
+        }
+        
     }
 }
 

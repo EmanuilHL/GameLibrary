@@ -87,6 +87,12 @@
                         <h6 class="card-header">@comment.UserName</h6>
                         <div class="card-body">
                             <p>@comment.CommentDescription</p>
+                            @if(this.User.Identity.Name == comment.UserName){
+                                <form method="post" asp-area="" asp-controller="Game" asp-action="RemoveComment"
+                                  asp-route-commentId="@comment.CommentId" asp-route-gameId="@Model.Id">
+                                   <input value="Delete" type="submit" class="btn btn-outline-danger" />
+                                </form>
+                            }
                         </div>
                     </div>
                 }

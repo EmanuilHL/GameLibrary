@@ -741,5 +741,26 @@ namespace GameLibrary.Core.Services
 
             return game;
         }
+
+        public async Task RemoveGameCommentById(int commentId, int gameId)
+        {
+            var game = await repo.All<Game>().Include(x => x.Comments).FirstOrDefaultAsync(x => x.Id == gameId);
+
+            if (game == null)
+            {
+                throw new ArgumentException("Game null at removing comment");
+            }
+
+            var comment = game.Comments.Where(x => x.Id == commentId).FirstOrDefault();
+
+            if (comment == null)
+            {
+                throw new ArgumentException($"Comment null at gamepost with {gameId} gameId");
+            }
+
+            game.Comments.Remove(comment);
+
+            await repo.SaveChangesAsync();
+        }
     }
 }

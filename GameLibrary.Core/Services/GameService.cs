@@ -6,6 +6,9 @@ using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.Infrastructure.Data.Entities.Enums;
 using Ganss.Xss;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +20,7 @@ namespace GameLibrary.Core.Services
     public class GameService : IGameService
     {
         private readonly IRepository repo;
+
 
         public GameService(IRepository repo)
         {
@@ -369,21 +373,7 @@ namespace GameLibrary.Core.Services
                 _ => games
             };
 
-            result.Games = await games
-                .Include(c => c.Genre)
-                .Select(g => new GameViewModel()
-                {
-                    Id = g.Id,
-                    Description = g.Description,
-                    ImageUrl = g.ImageUrl,
-                    Rating = g.Rating,
-                    Title = g.Title,
-                    UserId = g.UserId,
-                    Genre = g.Genre.GenreName,
-                    ReviewType = getReviewType(g.Rating).ToString()
-                })
-                .ToListAsync();
-
+            result.Games = await GetGames(games);
             return result;
         }
 
@@ -761,6 +751,24 @@ namespace GameLibrary.Core.Services
             game.Comments.Remove(comment);
 
             await repo.SaveChangesAsync();
+        }
+
+        private async Task<IEnumerable<GameViewModel>> GetGames(IQueryable<Game> games)
+        {
+            return await games
+                .Include(c => c.Genre)
+                .Select(g => new GameViewModel()
+                {
+                    Id = g.Id,
+                    Description = g.Description,
+                    ImageUrl = g.ImageUrl,
+                    Rating = g.Rating,
+                    Title = g.Title,
+                    UserId = g.UserId,
+                    Genre = g.Genre.GenreName,
+                    ReviewType = getReviewType(g.Rating).ToString()
+                })
+                .ToListAsync();
         }
     }
 }

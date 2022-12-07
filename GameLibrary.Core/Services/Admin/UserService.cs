@@ -3,6 +3,7 @@ using GameLibrary.Core.Models.Admin;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,31 +16,43 @@ namespace GameLibrary.Core.Services.Admin
     {
         private readonly IRepository repo;
 
-        public UserService(IRepository _repo)
+        private readonly IMemoryCache cache;
+
+        public const string UsersCacheKey = "UsersCacheKey";
+
+        public UserService(
+            IRepository _repo,
+            IMemoryCache _cache)
         {
             repo = _repo;
-        }
-
-        public async Task<IEnumerable<HelperAdminServiceModel>> AllHelpers()
-        {
-            return await repo.AllReadonly<Helper>()
-                .Select(x => new HelperAdminServiceModel()
-                {
-                    HelperId = x.Id,
-                    PhoneNumber = x.PhoneNumber,
-                    UserId = x.UserId
-                }).ToListAsync();
+            cache = _cache;
         }
 
         public async Task<IEnumerable<UserServiceModel>> AllUsers()
         {
-            return await repo.AllReadonly<User>()
+
+            var cachedUsers = cache.Get<IEnumerable<UserServiceModel>>(UsersCacheKey);
+
+            if (cachedUsers == null)
+            {
+                cachedUsers = await repo.AllReadonly<User>()
                 .Select(x => new UserServiceModel()
                 {
                     Email = x.Email,
-                    PhoneNumber = x.PhoneNumber,
+                    UserName = x.UserName,
                     UserId = x.Id
                 }).ToListAsync();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(20));
+
+                cache.Set(UsersCacheKey, cachedUsers, cacheEntryOptions);
+
+                return cachedUsers;
+            }
+            else
+            {
+                return cachedUsers;
+            }
         }
     }
 }

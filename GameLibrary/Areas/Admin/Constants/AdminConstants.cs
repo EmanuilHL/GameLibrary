@@ -7,5 +7,6 @@
         public const string AdminRole = "Administrator";
         
         public const string AdminEmail = "admin@mail.com";
+
     }
 }

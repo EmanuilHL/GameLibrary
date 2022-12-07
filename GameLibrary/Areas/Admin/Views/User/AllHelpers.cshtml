@@ -7,29 +7,37 @@
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th><label>HelperId</label></th>
-            <th><label>Phone Number</label></th>
-            <th><label>UserId</label></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
+
+@if(Model.Count() == 0){
+    <h3>No helpers as of this current moment.</h3>
+}
+else{
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td><label>@user.HelperId</label></td>
-                <td><label>@user.PhoneNumber</label></td>
-                <td><label>@user.UserId</label></td>
-                
-                @*<td>
+                <th><label>HelperId</label></th>
+                <th><label>Phone Number</label></th>
+                <th><label>UserId</label></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td><label>@user.HelperId</label></td>
+                    <td><label>@user.PhoneNumber</label></td>
+                    <td><label>@user.UserId</label></td>
+
+                    @*<td>
             <form asp-area="Admin" asp-controller="User" asp-action="Forget" method="post">
             <input type="hidden" value="@user.UserId">
             <button type="submit" class="btn btn-danger">Forget</button>
             </form>
             </td>*@
-            </tr>
-        }
-    </tbody>
-</table>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+

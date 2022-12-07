@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static GameLibrary.Areas.Admin.Constants.AdminConstants;
 using GameLibrary.Core.Extensions;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace GameLibrary.Controllers
 {
@@ -20,12 +21,16 @@ namespace GameLibrary.Controllers
 
         private readonly ILogger logger;
 
+        //private readonly IDistributedCache cache;
+
         public GameController(
             IGameService gameService,
-            ILogger<GameController> logger)
+            ILogger<GameController> logger
+            /*IDistributedCache cache*/)
         {
             this.gameService = gameService;
             this.logger = logger;
+            //this.cache = cache;
         }
 
         /// <summary>

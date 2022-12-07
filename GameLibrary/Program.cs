@@ -10,17 +10,27 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.ConfigureServices((context, services) =>
-{
-    services.Configure<KestrelServerOptions>(
-        context.Configuration.GetSection("Kestrel"));
-});
+//builder.Host.ConfigureServices((context, services) =>
+//{
+//    services.Configure<KestrelServerOptions>(
+//        context.Configuration.GetSection("Kestrel"));
+//});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+//builder.Services.AddDistributedSqlServerCache(options =>
+//{
+//    options.ConnectionString = builder.Configuration.GetConnectionString(
+//        "DefaultConnection");
+//    options.SchemaName = "dbo";
+//    options.TableName = "TestCache";
+//});
+
 
 builder.Services.AddDefaultIdentity<User>(options =>
 {
@@ -29,6 +39,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 //builder.Services.AddStackExchangeRedisCache(options =>
 //{

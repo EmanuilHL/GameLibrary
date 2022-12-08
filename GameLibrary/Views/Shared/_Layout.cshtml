@@ -38,17 +38,8 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Favourites">Favourites</a>
                             </li>
-                            //Fix career dropdown problem
-                            <li class="nav-item dropdown">
-                                <div>
-                                    <a class="btn dropdown-toggle text-dark" href="#" role="button" id="ddMl" 
-                                    data-bs-toggle="dropdown" aria-expanded="true">Career</a>
-                                    <ul class="dropdown-menu" aria-labelledby="ddMl">
-                                        <li>
-                                            <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Career" asp-action="Index">Helper</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Career" asp-action="Index">Career</a>
                             </li>
                             if (await helperService.ExistsById(this.User.Id()))
                             {
@@ -56,7 +47,7 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="GameMechanics" asp-action="Send">Send to Develepors</a>
                                 </li>
                             }
-                            @if (await gameService.IsUserDevelepor(this.User.Id()))
+                            @if (await gameService.IsUserDevelepor(this.User.Id()) || this.User.IsInRole(AdminRole))
                             {
                                 <li>
                                     <a class="nav-link text-dark" asp-area="" asp-controller="GameMechanics" asp-action="Service">Services for Develepors</a>

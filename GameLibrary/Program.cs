@@ -33,8 +33,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<User>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
-    options.Password.RequireNonAlphanumeric = false;
+    options.SignIn.RequireConfirmedAccount = builder.Configuration.GetValue<bool>("Identity:RequireConfirmedAccount");
+    options.SignIn.RequireConfirmedEmail = builder.Configuration.GetValue<bool>("Identity:RequireConfirmedEmail");
+    options.SignIn.RequireConfirmedPhoneNumber = builder.Configuration.GetValue<bool>("Identity:RequireConfirmedPhoneNumber");
+    options.Password.RequiredLength = builder.Configuration.GetValue<int>("Identity:RequiredLength");
+    options.Password.RequireNonAlphanumeric = builder.Configuration.GetValue<bool>("Identity:RequireNonAlphanumeric");
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -52,7 +55,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.HttpOnly = true;
     options.LoginPath = "/User/Login";
     options.LogoutPath = "/User/Logout";
-    //options.AccessDeniedPath = "/Home/Error";
 });
 
 builder.Services.AddCors(options =>
@@ -79,7 +81,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    //app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
+    //app.UseStatusCodePages();
+    app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

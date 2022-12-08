@@ -1,8 +1,6 @@
 ﻿using GameLibrary.Core.Contracts;
 using GameLibrary.Infrastructure.Data.Constants;
-using GameLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using static GameLibrary.Areas.Admin.Constants.AdminConstants;
 
 namespace GameLibrary.Controllers
@@ -38,7 +36,7 @@ namespace GameLibrary.Controllers
             {
                 logger.LogError(ex, "An Error occured when finding the hottest game");
                 TempData[MessageConstant.ErrorMessage] = "Invalid Attempt";
-                return RedirectToAction(nameof(Privacy));
+                return RedirectToAction(nameof(Error));
             }
         }
 
@@ -47,7 +45,7 @@ namespace GameLibrary.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+
         public IActionResult Error(int statuscode)
         {
             if (statuscode == 401)
@@ -57,6 +55,10 @@ namespace GameLibrary.Controllers
             else if (statuscode == 400)
             {
                 return View("Error400");
+            }
+            else if(statuscode == 404)
+            {
+                return View("Error404");
             }
             else
             {

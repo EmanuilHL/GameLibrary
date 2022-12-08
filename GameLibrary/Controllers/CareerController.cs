@@ -4,10 +4,11 @@ using GameLibrary.Extensions;
 using GameLibrary.Infrastructure.Data.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibrary.Areas.Admin.Constants.UserConstants;
 
 namespace GameLibrary.Controllers
 {
-    [Authorize]
+    [AuthorizeRoles(UserRole)]
     public class CareerController : Controller
     {
         private readonly ICareerService careerService;

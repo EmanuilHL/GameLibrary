@@ -11,10 +11,11 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static GameLibrary.Areas.Admin.Constants.AdminConstants;
 using GameLibrary.Core.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
+using static GameLibrary.Areas.Admin.Constants.UserConstants;
 
 namespace GameLibrary.Controllers
 {
-    [Authorize]
+    [AuthorizeRoles(AdminRole, UserRole)]
     public class GameController : Controller
     {
         private readonly IGameService gameService;

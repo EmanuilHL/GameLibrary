@@ -1,5 +1,4 @@
 using GameLibrary.Core.Extensions;
-using GameLibrary.Extensions;
 using GameLibrary.Infrastructure.Data;
 using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.ModelBinders;

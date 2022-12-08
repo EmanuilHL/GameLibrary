@@ -5,10 +5,11 @@ using GameLibrary.Infrastructure.Data.Constants;
 using GameLibrary.Infrastructure.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibrary.Areas.Admin.Constants.UserConstants;
 
 namespace GameLibrary.Controllers
 {
-    [Authorize]
+    [AuthorizeRoles(UserRole)]
     public class GameMechanicsController : Controller
     {
         private readonly ICareerService helperService;

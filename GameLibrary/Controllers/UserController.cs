@@ -1,10 +1,12 @@
-﻿using GameLibrary.Core.Models.User;
+﻿using GameLibrary.Areas.Admin.Constants;
+using GameLibrary.Core.Models.User;
 using GameLibrary.Infrastructure.Data.Constants;
 using GameLibrary.Infrastructure.Data.Entities;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static GameLibrary.Areas.Admin.Constants.UserConstants;
 
 namespace GameLibrary.Controllers
 {
@@ -18,8 +20,6 @@ namespace GameLibrary.Controllers
         private readonly RoleManager<IdentityRole> roleManager;
 
         private readonly ILogger logger;
-
-        private const string role = "User";
 
         public UserController(
             UserManager<User> _userManager,
@@ -67,12 +67,12 @@ namespace GameLibrary.Controllers
 
             var result = await userManager.CreateAsync(user, sanitizer.Sanitize(model.Password));
 
-            if (!await roleManager.RoleExistsAsync(role))
+            if (!await roleManager.RoleExistsAsync(UserRole))
             {
-                var newRole = new IdentityRole { Name = role };
+                var newRole = new IdentityRole { Name = UserRole };
                 await roleManager.CreateAsync(newRole);
             }
-            await userManager.AddToRoleAsync(user, role);
+            await userManager.AddToRoleAsync(user, UserRole);
 
             if (result.Succeeded)
             {

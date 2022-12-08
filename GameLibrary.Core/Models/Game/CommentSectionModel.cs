@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GameLibrary.Core.Models.Game
 {
-    public class CommentFormModel
+    public class CommentSectionModel
     {
         public int CommentId { get; set; }
 

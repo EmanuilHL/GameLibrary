@@ -10,6 +10,7 @@ namespace GameLibrary.Core.Models.Game
 {
     public class CommentPostModel : GameViewModel
     {
+        [Required]
         public int CommentId { get; set; }
 
         [Required]

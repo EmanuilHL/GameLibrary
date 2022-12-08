@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace GameLibrary.Core.Models.Game
 {
-    public class CommentViewModel : GameViewModel
+    public class DetailsViewModel : GameViewModel
     {
-        public IEnumerable<CommentFormModel> Comments { get; set; } = new List<CommentFormModel>();
+        public IEnumerable<CommentSectionModel> Comments { get; set; } = new List<CommentSectionModel>();
     }
 }

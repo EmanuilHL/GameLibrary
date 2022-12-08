@@ -158,7 +158,9 @@ namespace GameLibrary.Controllers
             {
                 var model = await gameService.ShowDetailsPage(gameId);
 
-                if (information != model.GetInformation())
+                var informationModel = await gameService.GetGameById(gameId);
+
+                if (information != informationModel.GetInformation())
                 {
                     logger.LogInformation("User {0} with UserId is Parameter tampering.", this.User.Id());
                     TempData[MessageConstant.ErrorMessage] = "Wrong Info";
@@ -458,7 +460,7 @@ namespace GameLibrary.Controllers
                 TempData[MessageConstant.ErrorMessage] = "Invalid!";
             }
 
-            var model = await gameService.ShowDetailsPage(gameId);
+            var model = await gameService.GetGameById(gameId);
 
             return RedirectToAction(nameof(Details), new { gameId = gameId, information = model.GetInformation() });
         }

@@ -31,7 +31,7 @@ namespace GameLibrary.Core.Contracts
 
         Task<GameViewModel> FindHottestGame();
         Task<CommentPostModel> GetCommentView(int gameId, string userId);
-        Task<CommentViewModel> ShowDetailsPage(int gameId);
+        Task<DetailsViewModel> ShowDetailsPage(int gameId);
 
         Task<bool> CheckIfGameExistsById(int gameId);
 
@@ -44,7 +44,7 @@ namespace GameLibrary.Core.Contracts
 
         Task<IEnumerable<GameViewModel>> GetGamesCreatedByUserId(string userId);
 
-        Task<CommentViewModel> GetGameById(int gameId);
+        Task<GameViewModel> GetGameById(int gameId);
 
         Task RemoveGameCommentById(int commentId, int gameId);
     }

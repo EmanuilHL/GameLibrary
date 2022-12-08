@@ -21,7 +21,7 @@ namespace GameLibrary.Core.Models.Game
 
 		public string Title { get; set; } = null!;
 
-		public string Description { get; set; } = null!;
+        public string Description { get; set; } = null!;
 
         public decimal Rating { get; set; }
 
@@ -33,10 +33,9 @@ namespace GameLibrary.Core.Models.Game
 
 		public string ReviewType { get; set; } = null!;
 
+
         public int LikesCount { get; set; }
 
         public int DislikesCount { get; set; }
-
-        public IEnumerable<Theme> Themes { get; set; } = new List<Theme>();
-	}
+    }
 }

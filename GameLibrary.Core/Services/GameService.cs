@@ -405,11 +405,11 @@ namespace GameLibrary.Core.Services
             return (ReviewType)id;
         }
 
-        public async Task<CommentViewModel> ShowDetailsPage(int gameId)
+        public async Task<DetailsViewModel> ShowDetailsPage(int gameId)
         {
             var game = await repo.All<Game>()
                 .Where(g => g.Id == gameId)
-                .Select(x => new CommentViewModel()
+                .Select(x => new DetailsViewModel()
                 {
                     Title = x.Title,
                     Description = x.Description,
@@ -421,7 +421,7 @@ namespace GameLibrary.Core.Services
                     UserId = x.UserId,
                     LikesCount = x.LikesCount,
                     DislikesCount = x.DislikesCount,
-                    Comments = x.Comments.Select(i => new CommentFormModel()
+                    Comments = x.Comments.Select(i => new CommentSectionModel()
                     {
                         CommentDescription = i.Description,
                         CommentId = i.Id,
@@ -700,36 +700,23 @@ namespace GameLibrary.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<CommentViewModel> GetGameById(int gameId)
+        public async Task<GameViewModel> GetGameById(int gameId)
         {
-            var game = await repo.All<Game>()
+            var model = await repo.All<Game>()
                 .Where(g => g.Id == gameId)
-                .Select(x => new CommentViewModel()
+                .Select(x => new GameViewModel()
                 {
                     Title = x.Title,
-                    Description = x.Description,
-                    Rating = x.Rating,
-                    ImageUrl = x.ImageUrl,
-                    Genre = x.Genre.GenreName,
-                    ReviewType = getReviewType(x.Rating).ToString(),
-                    Id = gameId,
-                    UserId = x.UserId,
-                    LikesCount = x.LikesCount,
-                    DislikesCount = x.DislikesCount,
-                    Comments = x.Comments.Select(i => new CommentFormModel()
-                    {
-                        CommentDescription = i.Description,
-                        CommentId = i.Id,
-                        UserName = i.User.UserName,
-                    }).ToList()
-                }).FirstOrDefaultAsync();
+                    Description = x.Description
+                })
+                .FirstOrDefaultAsync();
 
-            if (game == null)
+            if (model == null)
             {
                 throw new ArgumentException("game is null");
             }
 
-            return game;
+            return model;
         }
 
         public async Task RemoveGameCommentById(int commentId, int gameId)
@@ -760,8 +747,8 @@ namespace GameLibrary.Core.Services
                 .Select(g => new GameViewModel()
                 {
                     Id = g.Id,
-                    Description = g.Description,
                     ImageUrl = g.ImageUrl,
+                    Description = g.Description,
                     Rating = g.Rating,
                     Title = g.Title,
                     UserId = g.UserId,

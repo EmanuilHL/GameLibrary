@@ -501,7 +501,8 @@ namespace GameLibrary.Core.Services
         /// <exception cref="ArgumentException"></exception>
         public async Task LikePost(int gameId, string userId)
         {
-            var game = await repo.All<Game>().FirstOrDefaultAsync(x => x.Id == gameId);
+            var game = await repo.All<Game>().Where(x => x.Id == gameId)
+                .Include(x => x.UsersGamesForLike).FirstOrDefaultAsync();
 
             if (game == null)
             {
@@ -516,7 +517,6 @@ namespace GameLibrary.Core.Services
                 throw new ArgumentException("User is not found at likePost.");
             }
 
-            ///Allows a duplicate // fix 
             if (!user.UsersGamesForLike.Any(g => g.GameId == gameId))
             {
                 user.UsersGamesForLike.Add(new UserGameForLike()
@@ -526,6 +526,9 @@ namespace GameLibrary.Core.Services
                     UserId = userId, 
                     User = user
                 });
+
+                game.HasLiked = false;
+                game.HasDisliked = false;
             }
 
             bool didUserLikeGame = user.UsersGamesForLike.Any(g => g.GameId == gameId && g.Game.HasLiked);
@@ -536,7 +539,7 @@ namespace GameLibrary.Core.Services
             {
                 if (didUserLikeGame)
                 {
-                    game.HasLiked = false;
+                     game.HasLiked = false;
                     game.LikesCount--;
                 }
                 else
@@ -580,7 +583,8 @@ namespace GameLibrary.Core.Services
         /// <exception cref="ArgumentException"></exception>
         public async Task DislikePost(int gameId, string userId)
         {
-            var game = await repo.All<Game>().FirstOrDefaultAsync(x => x.Id == gameId);
+            var game = await repo.All<Game>().Where(x => x.Id == gameId)
+                .Include(x => x.UsersGamesForLike).FirstOrDefaultAsync();
 
             if (game == null)
             {
@@ -605,6 +609,8 @@ namespace GameLibrary.Core.Services
                     User = user
                 });
 
+                game.HasLiked = false;
+                game.HasDisliked = false;
             }
 
             bool didUserLikeGame = user.UsersGamesForLike.Any(g => g.GameId == gameId && g.Game.HasLiked);

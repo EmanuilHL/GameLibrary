@@ -52,6 +52,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.HttpOnly = true;
     options.LoginPath = "/User/Login";
     options.LogoutPath = "/User/Logout";
+    //options.AccessDeniedPath = "/Home/Error";
 });
 
 builder.Services.AddCors(options =>
@@ -78,7 +79,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    //app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

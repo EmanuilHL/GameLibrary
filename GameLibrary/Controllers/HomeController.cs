@@ -48,9 +48,20 @@ namespace GameLibrary.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int statuscode)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (statuscode == 401)
+            {
+                return View("Error401");
+            }
+            else if (statuscode == 400)
+            {
+                return View("Error400");
+            }
+            else
+            {
+                return View();
+            }
         }
     }
 }

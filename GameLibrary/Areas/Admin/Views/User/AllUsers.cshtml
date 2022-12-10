@@ -14,9 +14,9 @@ else{
     <table class="table table-striped">
         <thead>
             <tr>
+                <th><label>UserName</label></th>
                 <th><label>Email</label></th>
-                <th><label>Phone Number</label></th>
-                <th><label>HasPhone?</label></th>
+                <th><label>Forget User?</label></th>
             </tr>
         </thead>
         <tbody>
@@ -25,13 +25,11 @@ else{
                 <tr>
                     <td><label>@user.UserName</label></td>
                     <td><label>@user.Email</label></td>
-                    <td><label>@user.UserId</label></td>
-                    @*<td>
-            <form asp-area="Admin" asp-controller="User" asp-action="Forget" method="post">
-            <input type="hidden" value="@user.UserId">
-            <button type="submit" class="btn btn-danger">Forget</button>
-            </form>
-            </td>*@
+                    <td>
+                        <form asp-area="Admin" asp-controller="User" asp-action="Forget" asp-route-userId="@user.UserId" method="post">
+                            <button type="submit" class="btn btn-danger">Forget</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>

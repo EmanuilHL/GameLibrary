@@ -11,5 +11,7 @@ namespace GameLibrary.Core.Contracts.Admin
     public interface IUserService
     {
         Task<IEnumerable<UserServiceModel>> AllUsers();
+
+        Task<bool> Forget(string userId);
     }
 }

@@ -1,6 +1,9 @@
 ﻿using GameLibrary.Core.Contracts;
+using GameLibrary.Core.Models.Error;
 using GameLibrary.Infrastructure.Data.Constants;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using static GameLibrary.Areas.Admin.Constants.AdminConstants;
 
 namespace GameLibrary.Controllers
@@ -46,24 +49,14 @@ namespace GameLibrary.Controllers
         }
 
 
-        public IActionResult Error(int statuscode)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            if (statuscode == 401)
-            {
-                return View("Error401");
-            }
-            else if (statuscode == 400)
-            {
-                return View("Error400");
-            }
-            else if(statuscode == 404)
-            {
-                return View("Error404");
-            }
-            else
-            {
-                return View();
-            }
+            var feature = this.HttpContext.Features.Get<IExceptionHandlerFeature>();
+
+            logger.LogError(feature.Error, "TraceIdentifier: {0}", Activity.Current?.Id ?? HttpContext.TraceIdentifier);
+
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

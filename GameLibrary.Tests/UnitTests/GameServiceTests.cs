@@ -4,6 +4,7 @@ using GameLibrary.Infrastructure.Data;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.Tests.Mocks;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +87,7 @@ namespace GameLibrary.Tests.UnitTests
                 DislikesCount = 0,
                 LikesCount = 0
             });
-
+            
             await repo.SaveChangesAsync();
             //Act
             var games = await gameService.GetGamesCreatedByUserId(userId);

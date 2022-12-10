@@ -175,12 +175,14 @@ namespace GameLibrary.Core.Services
 
             var game = user.UsersGames.FirstOrDefault(m => m.GameId == gameId);
 
-            if (game != null)
+            if (game == null)
             {
-                user.UsersGames.Remove(game);
-
-                await repo.SaveChangesAsync();
+                throw new ArgumentException("Invalid game ID");
             }
+
+            user.UsersGames.Remove(game);
+
+            await repo.SaveChangesAsync();
         }
 
 
@@ -339,12 +341,8 @@ namespace GameLibrary.Core.Services
         public async Task<GameQueryModel> Search(string? theme = null, string? searchTerm = null
             , RatingSorting sorting = RatingSorting.None)
         {
-
-
             var result = new GameQueryModel();
             var games = repo.All<Game>();
-
-            
 
             if (string.IsNullOrEmpty(theme) == false)
             {
@@ -358,8 +356,7 @@ namespace GameLibrary.Core.Services
                 searchTerm = $"%{searchTerm.ToLower()}%";
 
                 games = games
-                    .Where(h => EF.Functions.Like(h.Title.ToLower(), searchTerm))
-                    .OrderByDescending(x => x.Rating);
+                    .Where(h => EF.Functions.Like(h.Title.ToLower(), searchTerm));
             }
 
             

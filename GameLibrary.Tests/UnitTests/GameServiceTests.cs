@@ -76,6 +76,113 @@ namespace GameLibrary.Tests.UnitTests
         }
 
         [Test]
+        public async Task FindEditPostById_ReturnsPost()
+        {
+            await repo.AddAsync(new Game
+            {
+                Id = 1,
+                Title = "1",
+                ImageUrl = "2",
+                Description = "3",
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            var game = await gameService.FindEditPostById(1);
+
+            Assert.That(game.Title, Is.EqualTo("1"));
+            Assert.That(game.ImageUrl, Is.EqualTo("2"));
+            Assert.That(game.Description, Is.EqualTo("3"));
+        }
+
+        [Test]
+        public async Task FindEditPostById_ReturnsNull()
+        {
+            await repo.AddAsync(new Game
+            {
+                Id = 1,
+                Title = "",
+                ImageUrl = "",
+                Description = "",
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.FindEditPostById(2));
+        }
+
+        [Test]
+        public async Task GetGameToDelete_ReturnsPost()
+        {
+            await repo.AddAsync(new Game
+            {
+                Id = 1,
+                Title = "1",
+                ImageUrl = "2",
+                Description = "3",
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            var game = await gameService.GetGameToDelete(1);
+
+            Assert.That(game.Title, Is.EqualTo("1"));
+            Assert.That(game.ImageUrl, Is.EqualTo("2"));
+            Assert.That(game.Description, Is.EqualTo("3"));
+        }
+
+        [Test]
+        public async Task GetGameToDelete_ReturnsNull()
+        {
+            await repo.AddAsync(new Game
+            {
+                Id = 1,
+                Title = "",
+                ImageUrl = "",
+                Description = "",
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.GetGameToDelete(2));
+        }
+
+        [Test]
+        public async Task DeleteGamePost_Null()
+        {
+            await repo.AddAsync(new Game
+            {
+                Id = 1,
+                Title = "",
+                ImageUrl = "",
+                Description = "",
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.DeleteGamePost(2));
+        }
+
+        [Test]
+        public async Task DeleteGamePost_Deletes()
+        {
+            await repo.AddAsync(new Game
+            {
+                Id = 1,
+                Title = "",
+                ImageUrl = "",
+                Description = "",
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            await gameService.DeleteGamePost(1);
+
+            var games = await repo.All<Game>().ToListAsync();
+            Assert.That(games.Count, Is.EqualTo(0));
+        }
+
+        [Test]
         public async Task EditGameAsync_EditsAGame()
         {
 
@@ -210,6 +317,83 @@ namespace GameLibrary.Tests.UnitTests
                 Id = userId,
             };
             await repo.AddAsync(user);
+            Genre genre = new Genre()
+            {
+                Id = 1,
+                GenreName = "Cool"
+            };
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = userId,
+                Rating = 10.00m,
+                Genre = genre,
+                GenreId = 1
+            });
+
+            await repo.AddAsync(genre);
+            await repo.SaveChangesAsync();
+            await gameService.MarkGameAsFavourite(userId, 1);
+
+            var favourites = await gameService.ShowAllFavourites(userId);
+
+            Assert.That(favourites.Count(), Is.EqualTo(1));
+        }
+
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", 0)]
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "4df272e3-8ddb-4218-8da7-006e32f8433c", 1)]
+        public async Task MarkGameAsUnFavourite_ReturnsUserAndGameNull(string userId, string secondUserId, int gameId)
+        {
+            await repo.AddAsync(new User()
+            {
+                Id = userId,
+            });
+
+            await repo.AddAsync(new Game()
+            {
+                Id = gameId,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = secondUserId
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.MarkGameAsUnfavourite(gameId, secondUserId));
+        }
+
+        [Test]
+        public async Task CheckIfGameExistsById_FalseAndTrue()
+        {
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            bool test = await gameService.CheckIfGameExistsById(1);
+            bool test2 = await gameService.CheckIfGameExistsById(2);
+
+            Assert.That(test, Is.True);
+            Assert.That(test2, Is.False);
+        }
+
+        [Test]
+        public async Task MarkGameAsUnFavourite_ReturnsSuccess()
+        {
+            var userId = "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe";
+
+            await repo.AddAsync(new User()
+            {
+                Id = userId,
+            });
 
             await repo.AddAsync(new Game()
             {
@@ -219,18 +403,161 @@ namespace GameLibrary.Tests.UnitTests
                 Title = "",
                 UserId = userId
             });
+            await repo.SaveChangesAsync();
 
-            await repo.AddAsync(new Genre()
+            //Act
+            await gameService.MarkGameAsFavourite(userId, 1);
+            await gameService.MarkGameAsUnfavourite(1, userId);
+            var usergames = await repo.All<UserGame>().Where(x => x.UserId == userId).ToListAsync();
+            //Assert
+            Assert.That(usergames.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task FindHottestGame_ReturnsHottestGame()
+        {
+            await repo.AddRangeAsync(new List<Game>()
             {
-                Id = 1,
-                GenreName = "Cool"
+                new Game
+                {
+                    Id = 1,
+                    Description = "asd",
+                    ImageUrl = "asd",
+                    Title = "asd",
+                    DislikesCount = 0,
+                    LikesCount = 0,
+                    UserId = "1"
+                },
+                new Game
+                {
+                    Id = 2,
+                    Description = "dsa",
+                    ImageUrl = "dsa",
+                    Title = "dsa",
+                    DislikesCount = 1,
+                    LikesCount = 1,
+                    UserId = "2"
+                },
+                new Game
+                {
+                    Id = 3,
+                    Description = "sad",
+                    ImageUrl = "sad",
+                    Title = "sad",
+                    DislikesCount = 1,
+                    LikesCount = 2,
+                    UserId = "3"
+                },
+                new Game
+                {
+                    Id = 4,
+                    Description = "sad",
+                    ImageUrl = "sad",
+                    Title = "sad",
+                    DislikesCount = 0,
+                    LikesCount = 2,
+                    UserId = "3"
+                }
             });
             await repo.SaveChangesAsync();
-            await gameService.MarkGameAsFavourite(userId, 1);
 
-            var favourites = await gameService.ShowAllFavourites(userId);
+            var game = await gameService.FindHottestGame();
 
-            Assert.That(favourites.Count, Is.EqualTo(1));
+            Assert.That(game.LikesCount, Is.EqualTo(2));
+            Assert.That(game.DislikesCount, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void FindHottestGame_ReturnsNull()
+        {
+            Assert.ThrowsAsync<ArgumentException>( async () => await gameService.FindHottestGame());
+        }
+
+        [Test]
+        public async Task Search_AllOptions()
+        {
+            string theme = "Epic";
+            string searchTerm = "League";
+            RatingSorting sorting = RatingSorting.Descending;
+
+            Theme themde = new Theme()
+            {
+                Id = 1,
+                ThemeName = "Epic"
+            };
+            Genre genre = new Genre()
+            {
+                Id = 1,
+                GenreName = "Awesome"
+            };
+            await repo.AddAsync(themde);
+            await repo.AddAsync(genre);
+            await repo.AddRangeAsync(new List<Game>()
+            {
+                new Game
+                {
+                    Id = 1,
+                    Description = "asd",
+                    ImageUrl = "asd",
+                    Title = "League",
+                    DislikesCount = 0,
+                    Rating = 10.00m,
+                    LikesCount = 0,
+                    UserId = "1",
+                    Theme = themde,
+                    Genre = genre
+                },
+                new Game
+                {
+                    Id = 2,
+                    Description = "dsa",
+                    ImageUrl = "dsa",
+                    Title = "League of",
+                    DislikesCount = 1,
+                    Rating = 9.00m,
+                    LikesCount = 1,
+                    UserId = "2",
+                    Theme = themde,
+                    Genre = genre
+                },
+                new Game
+                {
+                    Id = 3,
+                    Description = "sad",
+                    ImageUrl = "sad",
+                    Title = "sad",
+                    DislikesCount = 1,
+                    Rating = 8.00m,
+                    LikesCount = 2,
+                    UserId = "3",
+                    Genre = genre
+                },
+                new Game
+                {
+                    Id = 4,
+                    Description = "sad",
+                    ImageUrl = "sad",
+                    Title = "sad",
+                    DislikesCount = 0,
+                    Rating = 7.00m,
+                    LikesCount = 2,
+                    UserId = "3",
+                    Genre = genre
+                }
+            });
+            await repo.SaveChangesAsync();
+
+            var ersteFall = await gameService.Search();
+            var zweiteFall = await gameService.Search(theme);
+            var dritteFall = await gameService.Search(theme, searchTerm);
+            var vierteFall = await gameService.Search(theme, searchTerm, sorting);
+
+            var test = vierteFall.Games.FirstOrDefault();
+
+            Assert.That(ersteFall.Games.Count(), Is.EqualTo(4));
+            Assert.That(zweiteFall.Games.Count(), Is.EqualTo(2));
+            Assert.That(dritteFall.Games.Count(), Is.EqualTo(2));
+            Assert.That(test.Id, Is.EqualTo(1));
         }
 
         [Test]

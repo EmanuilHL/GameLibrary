@@ -81,41 +81,6 @@ namespace GameLibrary.Tests.UnitTests
             Assert.That(falsePhonetest, Is.False);
         }
 
-        [Test]
-        public async Task CreateHelper_ReturnsHelperCreated()
-        {
-            //Arrange
-            string userId = "1786b223-314a-40ef-92e4-f7204b772971";
-            string phoneNumber = "+345032353214";
-            //Act
-            await careerService.CreateHelper(userId, phoneNumber);
-
-            var helper = await repo.All<Helper>().FirstOrDefaultAsync(x => x.UserId == userId && x.PhoneNumber == phoneNumber);
-            //Assert
-            Assert.That(helper.UserId, Is.EqualTo(userId));
-            Assert.That(helper.PhoneNumber, Is.EqualTo(phoneNumber));
-        }
-
-        //[Test]
-        //public async Task AllHelpers_ReturnsHelpersEvenNull()
-        //{
-        //    //Arrange
-        //    string userId = "1786b223-314a-40ef-92e4-f7204b772971";
-        //    string phoneNumber = "+345032353214";
-
-        //    await repo.AddAsync(new Helper()
-        //    {
-        //        UserId = userId,
-        //        PhoneNumber = phoneNumber
-        //    });
-
-        //    await repo.SaveChangesAsync();
-        //    //Act
-        //    var helpers = await careerService.AllHelpers();
-
-        //    //Assert
-        //    Assert.That(helpers.Count(), Is.EqualTo(1));
-        //}
 
         [TearDown]
         public void TearDown()

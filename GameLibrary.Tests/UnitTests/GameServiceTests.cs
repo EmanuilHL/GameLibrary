@@ -561,6 +561,174 @@ namespace GameLibrary.Tests.UnitTests
         }
 
         [Test]
+        public async Task ShowDetailsPage_ReturnsNull()
+        {
+            await repo.AddAsync(new Game
+            {
+                Id = 1,
+                Description = "asd",
+                ImageUrl = "asd",
+                Title = "League",
+                DislikesCount = 0,
+                Rating = 10.00m,
+                LikesCount = 0,
+                UserId = "1"
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.ShowDetailsPage(2));
+        }
+
+        [Test]
+        public async Task ShowDetailsPage_ReturnsDetailsPage()
+        {
+            var user = new User()
+            {
+                Id = "1"
+            };
+            var genre = new Genre()
+            {
+                Id = 1,
+                GenreName = "Epic"
+            };
+            await repo.AddAsync(genre);
+            await repo.AddAsync(user);
+            await repo.AddAsync(new Game()
+            {
+                Title = "",
+                Description = "",
+                Rating = 5.0m,
+                ImageUrl = "",
+                Genre = genre,
+                Id = 1,
+                UserId = "1",
+                LikesCount = 0,
+                DislikesCount = 0,
+                Comments = new List<Comment>()
+                {
+                    new Comment()
+                    {
+                        Id = 1,
+                        Description = "wow",
+                        User = user
+                    }
+                }
+            });
+            await repo.SaveChangesAsync();
+
+            var detailsPage = await gameService.ShowDetailsPage(1);
+
+            Assert.That(detailsPage.Id, Is.EqualTo(1));
+            Assert.That(detailsPage.Rating, Is.EqualTo(5.0m));
+            Assert.That(detailsPage.ReviewType, Is.EqualTo("OK"));
+            Assert.IsNotNull(detailsPage.Comments);
+        }
+
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", 0)]
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "4df272e3-8ddb-4218-8da7-006e32f8433c", 1)]
+        public async Task GetCommentView_Exceptions(string userId, string secondUserId, int gameId)
+        {
+            await repo.AddAsync(new User()
+            {
+                Id = userId,
+            });
+
+            await repo.AddAsync(new Game()
+            {
+                Id = gameId,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = secondUserId
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.GetCommentView(gameId, secondUserId));
+        }
+
+        [Test]
+        public async Task GetCommentView_Success()
+        {
+            var userId = "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe";
+
+            await repo.AddAsync(new User()
+            {
+                Id = userId,
+                UserName = "D"
+            });
+
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = userId
+            });
+            await repo.SaveChangesAsync();
+
+            //Act
+            var post = await gameService.GetCommentView(1, userId);
+            //Assert
+            Assert.That(post.Id, Is.EqualTo(1));
+            Assert.That(post.UserName, Is.EqualTo("D"));
+        }
+
+        [TestCase(null, "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", 0)]
+        [TestCase(null, "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "4df272e3-8ddb-4218-8da7-006e32f8433c", 1)]
+        public async Task AddComment_Exceptions(CommentPostModel model,string userId, string secondUserId, int gameId)
+        {
+            await repo.AddAsync(new User()
+            {
+                Id = userId,
+            });
+
+            await repo.AddAsync(new Game()
+            {
+                Id = gameId,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = secondUserId
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.AddComment(model, gameId, secondUserId));
+        }
+
+        [Test]
+        public async Task AddComment_Success()
+        {
+            var userId = "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe";
+
+            await repo.AddAsync(new User()
+            {
+                Id = userId,
+                UserName = "D"
+            });
+            var game = new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = userId,
+                Comments = new List<Comment>()
+            };
+            await repo.AddAsync(game);
+            await repo.SaveChangesAsync();
+
+            //Act
+            await gameService.AddComment(new CommentPostModel()
+            {
+                CommentId = 1,
+                CommentDescription = "Buzz"
+            }, 1, userId);
+            //Assert
+            Assert.That(game.Comments.Count(), Is.EqualTo(1));
+        }
+
+        [Test]
         public async Task GetAllGenres_ReturnsAllGenres()
         {
             await repo.AddRangeAsync(new List<Genre>()

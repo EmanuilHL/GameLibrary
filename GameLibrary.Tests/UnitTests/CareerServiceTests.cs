@@ -35,7 +35,7 @@ namespace GameLibrary.Tests.UnitTests
             var cache = cacheMock.Object;
             careerService = new CareerService(repo, cache);
         }
-
+        //2
         [Test]
         public async Task ExistsById_AndHelperWithPhoneNumber_ShouldReturnTrueAndFalse()
         {
@@ -81,6 +81,14 @@ namespace GameLibrary.Tests.UnitTests
             Assert.That(falsePhonetest, Is.False);
         }
 
+        [Test]
+        public async Task CreateHelper_CreatesHelper()
+        {
+            await careerService.CreateHelper("1", "+356721235631");
+            var helpers = await repo.All<Helper>().ToListAsync();
+
+            Assert.That(helpers.Count, Is.EqualTo(1));
+        }
 
         [TearDown]
         public void TearDown()

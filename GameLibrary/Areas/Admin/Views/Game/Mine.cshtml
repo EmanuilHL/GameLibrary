@@ -1,17 +1,17 @@
 ﻿ @model AdminGamesViewModel
 
 @{
-    ViewBag.Title = "My Houses";
+    ViewBag.Title = "My Games";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
 
-<h4>My Added Houses</h4>
+<h4>My Added Games</h4>
 
 @if (!Model.GamesAddedByAdmin.Any())
 {
-    <h2 class="text-center">You have no added houses yet!</h2>
+    <h2 class="text-center">You have no added games yet!</h2>
 }
 
 <div class="row">

@@ -463,7 +463,7 @@ namespace GameLibrary.Core.Services
         public async Task AddComment(CommentPostModel model, int gameId, string userId)
         {
             HtmlSanitizer sanitizer = new HtmlSanitizer();
-            var game = await repo.All<Game>().FirstOrDefaultAsync(x => x.Id == gameId);
+            var game = await repo.All<Game>().Include(x => x.Comments).FirstOrDefaultAsync(x => x.Id == gameId);
             var user = await repo.All<User>().FirstOrDefaultAsync(x => x.Id == userId);
 
             if (game == null)
@@ -546,28 +546,6 @@ namespace GameLibrary.Core.Services
                 }
             }
 
-            //if (!game.IsFirst)
-            //{
-            //    game.BaseRating = game.Rating;
-            //    game.IsFirst = true;
-            //}
-
-            //if (game.LikesCount == game.DislikesCount)
-            //{
-            //    game.Rating = game.BaseRating;
-            //}
-            //else
-            //{
-            //    decimal count = (game.LikesCount / (game.LikesCount + game.DislikesCount)) * 10;
-
-            //    game.Rating = (game.Rating + count) / 2;
-
-            //    if (game.Rating > 10.0m)
-            //    {
-            //        game.Rating = 10.0m;
-            //    }
-            //}
-
             await repo.SaveChangesAsync();
         }
 
@@ -627,42 +605,6 @@ namespace GameLibrary.Core.Services
                     game.DislikesCount++;
                 }
             }
-
-            //if (user.HasLiked == false)
-            //{
-            //    if (user.HasDisliked)
-            //    {
-            //        user.HasDisliked = false;
-            //        game.DislikesCount--;
-            //    }
-            //    else
-            //    {
-            //        user.HasDisliked = true;
-            //        game.DislikesCount++;
-            //    }
-            //}
-
-            //if (!game.IsFirst)
-            //{
-            //    game.BaseRating = game.Rating;
-            //    game.IsFirst = true;
-            //}
-
-            //if (game.LikesCount == game.DislikesCount)
-            //{
-            //    game.Rating = game.BaseRating;
-            //}
-            //else
-            //{
-            //    decimal count = (game.LikesCount / (game.LikesCount + game.DislikesCount)) * 10;
-
-            //    game.Rating = Math.Round((game.Rating + count) / 2, 2);
-
-            //    if (game.Rating > 10.0m)
-            //    {
-            //        game.Rating = 10.0m;
-            //    }
-            //}
 
             await repo.SaveChangesAsync();
         }

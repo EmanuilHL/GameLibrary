@@ -72,10 +72,10 @@ namespace GameLibrary.Controllers
                 var newRole = new IdentityRole { Name = UserRole };
                 await roleManager.CreateAsync(newRole);
             }
-            await userManager.AddToRoleAsync(user, UserRole);
 
             if (result.Succeeded)
             {
+                await userManager.AddToRoleAsync(user, UserRole);
                 return RedirectToAction("Login", "User");
             }
             TempData[MessageConstant.ErrorMessage] = "Could not register";

@@ -22,9 +22,6 @@
                     <p>@gameMechanic.MechanicDescription</p>
                 </div>
 
-                <a class="btn btn-dark" asp-controller="Game" asp-action="Details"
-                asp-route-gameId="@gameMechanic.GameId">View suggested Game</a>
-
                 <form method="post" asp-controller="GameMechanics" asp-action="Confirmation" asp-route-mechanicId="@gameMechanic.MechanicId">
                     <input type="submit" value="Mark as Read" class="btn btn-outline-danger" />
                 </form>

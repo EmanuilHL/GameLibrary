@@ -34,7 +34,7 @@ namespace GameLibrary.Tests.UnitTests
             repo = new Repository(context);
             gameService = new GameService(repo);
         }
-
+        //22
         [Test]
         public async Task IsUserDevelepor_ReturnsTrueAndFalseWithTwoUsers()
         {
@@ -696,15 +696,69 @@ namespace GameLibrary.Tests.UnitTests
             Assert.ThrowsAsync<ArgumentException>(async () => await gameService.AddComment(model, gameId, secondUserId));
         }
 
-        [Test]
-        public async Task AddComment_Success()
-        {
-            var userId = "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe";
+        //[Test]
+        //public async Task AddComment_Success()
+        //{
+        //    var userId = "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe";
 
+        //    await repo.AddAsync(new User()
+        //    {
+        //        Id = userId,
+        //        UserName = "D"
+        //    });
+        //    var game = new Game()
+        //    {
+        //        Id = 1,
+        //        ImageUrl = "",
+        //        Description = "",
+        //        Title = "",
+        //        UserId = userId,
+        //        Comments = new List<Comment>()
+        //    };
+        //    await repo.AddAsync(game);
+        //    await repo.SaveChangesAsync();
+
+        //    var commentPost = new CommentPostModel()
+        //    {
+        //        CommentId = 1,
+        //        CommentDescription = "Buzz"
+        //    };
+
+        //    //Act
+        //    await gameService.AddComment(commentPost, 1, userId);
+        //    //Assert
+        //    Assert.That(game.Comments.Count(), Is.EqualTo(1));
+        //}
+
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", 0)]
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "4df272e3-8ddb-4218-8da7-006e32f8433c", 1)]
+        public async Task LikePost_Exceptions(string userId, string secondUserId, int gameId)
+        {
             await repo.AddAsync(new User()
             {
                 Id = userId,
-                UserName = "D"
+            });
+
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = secondUserId
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.LikePost(gameId, secondUserId));
+        }
+
+        [Test]
+        public async Task LikePost_Success()
+        {
+            await repo.AddAsync(new User()
+            {
+                Id = "1",
+                UsersGamesForLike = new List<UserGameForLike>()
             });
             var game = new Game()
             {
@@ -712,21 +766,197 @@ namespace GameLibrary.Tests.UnitTests
                 ImageUrl = "",
                 Description = "",
                 Title = "",
-                UserId = userId,
-                Comments = new List<Comment>()
+                UserId = "2",
+                HasDisliked = false,
+                HasLiked = false,
+                LikesCount = 0,
+                DislikesCount = 0,
+                UsersGamesForLike = new List<UserGameForLike>()
+            };
+            await repo.AddAsync(new User()
+            {
+                Id = "2",
+                UsersGamesForLike = new List<UserGameForLike>()
+            });
+            await repo.AddAsync(new User()
+            {
+                Id = "3",
+                UsersGamesForLike = new List<UserGameForLike>()
+            });
+            var secondgame = new Game()
+            {
+                Id = 2,
+                ImageUrl = "",
+                Description = "",
+                Title = "SD",
+                UserId = "3",
+                HasDisliked = false,
+                HasLiked = true,
+                LikesCount = 1,
+                DislikesCount = 0,
+                UsersGamesForLike = new List<UserGameForLike>()
+                {
+                    new UserGameForLike()
+                    {
+                        GameId = 2,
+                        UserId = "2"
+                    }
+                }
+            };
+            var thirdgame = new Game()
+            {
+                Id = 3,
+                ImageUrl = "",
+                Description = "",
+                Title = "SD",
+                UserId = "4",
+                HasDisliked = true,
+                HasLiked = false,
+                LikesCount = 1,
+                DislikesCount = 0,
+                UsersGamesForLike = new List<UserGameForLike>()
+                {
+                    new UserGameForLike()
+                    {
+                        GameId = 3,
+                        UserId = "3"
+                    }
+                }
             };
             await repo.AddAsync(game);
+            await repo.AddAsync(secondgame);
+            await repo.AddAsync(thirdgame);
             await repo.SaveChangesAsync();
 
-            //Act
-            await gameService.AddComment(new CommentPostModel()
-            {
-                CommentId = 1,
-                CommentDescription = "Buzz"
-            }, 1, userId);
-            //Assert
-            Assert.That(game.Comments.Count(), Is.EqualTo(1));
+            await gameService.LikePost(1, "1");
+            await gameService.LikePost(2, "2");
+            await gameService.LikePost(3, "3");
+
+            Assert.That(game.LikesCount, Is.EqualTo(1));
+            Assert.That(game.HasLiked == true);
+
+            Assert.That(secondgame.LikesCount, Is.EqualTo(0));
+            Assert.That(secondgame.HasLiked == false);
+
+            Assert.That(thirdgame.LikesCount, Is.EqualTo(1));
+            Assert.That(thirdgame.HasLiked == false);
+            Assert.That(thirdgame.HasDisliked == true);
         }
+
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", 0)]
+        [TestCase("23c512d2-b8d8-46ec-b15c-4442e4d4cfbe", "4df272e3-8ddb-4218-8da7-006e32f8433c", 1)]
+        public async Task DislikePost_Exceptions(string userId, string secondUserId, int gameId)
+        {
+            await repo.AddAsync(new User()
+            {
+                Id = userId,
+            });
+
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = secondUserId
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.DislikePost(gameId, secondUserId));
+        }
+
+        [Test]
+        public async Task DislikePost_Success()
+        {
+            await repo.AddAsync(new User()
+            {
+                Id = "1",
+                UsersGamesForLike = new List<UserGameForLike>()
+            });
+            var game = new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = "2",
+                HasDisliked = false,
+                HasLiked = false,
+                LikesCount = 0,
+                DislikesCount = 0,
+                UsersGamesForLike = new List<UserGameForLike>()
+            };
+            await repo.AddAsync(new User()
+            {
+                Id = "2",
+                UsersGamesForLike = new List<UserGameForLike>()
+            });
+            await repo.AddAsync(new User()
+            {
+                Id = "3",
+                UsersGamesForLike = new List<UserGameForLike>()
+            });
+            var secondgame = new Game()
+            {
+                Id = 2,
+                ImageUrl = "",
+                Description = "",
+                Title = "SD",
+                UserId = "3",
+                HasDisliked = true,
+                HasLiked = false,
+                LikesCount = 1,
+                DislikesCount = 1,
+                UsersGamesForLike = new List<UserGameForLike>()
+                {
+                    new UserGameForLike()
+                    {
+                        GameId = 2,
+                        UserId = "2"
+                    }
+                }
+            };
+            var thirdgame = new Game()
+            {
+                Id = 3,
+                ImageUrl = "",
+                Description = "",
+                Title = "SD",
+                UserId = "4",
+                HasDisliked = false,
+                HasLiked = true,
+                LikesCount = 0,
+                DislikesCount = 1,
+                UsersGamesForLike = new List<UserGameForLike>()
+                {
+                    new UserGameForLike()
+                    {
+                        GameId = 3,
+                        UserId = "3"
+                    }
+                }
+            };
+            await repo.AddAsync(game);
+            await repo.AddAsync(secondgame);
+            await repo.AddAsync(thirdgame);
+            await repo.SaveChangesAsync();
+
+            await gameService.DislikePost(1, "1");
+            await gameService.DislikePost(2, "2");
+            await gameService.DislikePost(3, "3");
+
+            Assert.That(game.DislikesCount, Is.EqualTo(1));
+            Assert.That(game.HasDisliked == true);
+
+            Assert.That(secondgame.DislikesCount, Is.EqualTo(0));
+            Assert.That(secondgame.HasDisliked == false);
+
+            Assert.That(thirdgame.DislikesCount, Is.EqualTo(1));
+            Assert.That(thirdgame.HasLiked == true);
+            Assert.That(thirdgame.HasDisliked == false);
+        }
+
+        
 
         [Test]
         public async Task GetAllGenres_ReturnsAllGenres()
@@ -743,32 +973,133 @@ namespace GameLibrary.Tests.UnitTests
             Assert.That(genres.Count(), Is.EqualTo(2));
         }
 
-        //[Test]
-        //public async Task GetGamesCreatedByUserId_ReturnsTheGamesByUserId()
-        //{
-        //    //Arrange
+        [Test]
+        public async Task GetGamesCreatedByUserId_Success()
+        {
+            //arrange
+            var genre = new Genre()
+            {
+                Id = 1,
+                GenreName = "Epic"
+            };
+            await repo.AddAsync(genre);
+            string userid = "6c0e1cc2-e4d5-4b77-a9ae-c88a0d2bd184";
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                Description = "",
+                ImageUrl = "",
+                Rating = 10.00m,
+                Title = "League",
+                UserId = userid,
+                DislikesCount = 0,
+                LikesCount = 0,
+                Genre = genre
+            });
 
-        //    string userId = "6c0e1cc2-e4d5-4b77-a9ae-c88a0d2bd184";
-        //    await repo.AddAsync(new Game()
-        //    {
-        //        Id = 1,
-        //        Description = "",
-        //        ImageUrl = "",
-        //        Rating = 10.00m,
-        //        Title = "League",
-        //        UserId = userId,
-        //        DislikesCount = 0,
-        //        LikesCount = 0
-        //    });
+            await repo.SaveChangesAsync();
+            //act
+            var games = await gameService.GetGamesCreatedByUserId(userid);
+            var game = games.FirstOrDefault(x => x.UserId == userid);
 
-        //    await repo.SaveChangesAsync();
-        //    //Act
-        //    var games = await gameService.GetGamesCreatedByUserId(userId);
-        //    var game = games.FirstOrDefault(x => x.UserId == userId);
+            Assert.That(games.Count(), Is.EqualTo(1));
+            Assert.That(game.Title, Is.EqualTo("League"));
+        }
 
-        //    Assert.That(games.Count(), Is.EqualTo(1));
-        //    Assert.That(game.Title, Is.EqualTo("League"));
-        //}
+        [Test]
+        public async Task GetGameById_Null()
+        {
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                Description = "",
+                ImageUrl = "",
+                Rating = 10.00m,
+                Title = "League",
+                UserId = "1",
+                DislikesCount = 0,
+                LikesCount = 0
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.GetGameById(2));
+        }
+
+        [Test]
+        public async Task GetGameById_GetsGameById()
+        {
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                Description = "",
+                ImageUrl = "",
+                Rating = 10.00m,
+                Title = "League",
+                UserId = "1",
+                DislikesCount = 0,
+                LikesCount = 0
+            });
+            await repo.SaveChangesAsync();
+
+            var game = await gameService.GetGameById(1);
+
+            Assert.That(game.Title, Is.EqualTo("League"));
+            Assert.That(game.Description, Is.EqualTo(""));
+        }
+
+        [TestCase(1, 0)]
+        [TestCase(0, 1)]
+        public async Task RemoveComment_Exceptions(int commentId, int gameId)
+        {
+            await repo.AddAsync(new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = "1",
+                Comments = new List<Comment>()
+                {
+                    new Comment()
+                    {
+                        Id = 1,
+                        Description = "",
+                        UserId = "1"
+                    }
+                }
+            });
+            await repo.SaveChangesAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await gameService.RemoveGameCommentById(commentId, gameId));
+        }
+
+        [Test]
+        public async Task RemoveComment_Success()
+        {
+            var game = new Game()
+            {
+                Id = 1,
+                ImageUrl = "",
+                Description = "",
+                Title = "",
+                UserId = "1",
+                Comments = new List<Comment>()
+                {
+                    new Comment()
+                    {
+                        Id = 1,
+                        Description = "",
+                        UserId = "1"
+                    }
+                }
+            };
+            await repo.AddAsync(game);
+            await repo.SaveChangesAsync();
+
+            await gameService.RemoveGameCommentById(1, 1);
+
+            Assert.That(game.Comments.Count, Is.EqualTo(0));
+        }
 
         [TearDown]
         public void TearDown()

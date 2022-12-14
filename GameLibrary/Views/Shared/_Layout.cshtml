@@ -55,13 +55,13 @@
                             if (await helperService.ExistsById(this.User.Id()))
                             {
                                 <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="GameMechanics" asp-action="Send">Send to Develepors</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="GameMechanics" asp-action="Send">Send to Developers</a>
                                 </li>
                             }
                             @if (await gameService.IsUserDevelepor(this.User.Id()) || this.User.IsInRole(AdminRole))
                             {
                                 <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="GameMechanics" asp-action="Service">Services for Develepors</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="GameMechanics" asp-action="Service">Services for Developers</a>
                                 </li>
                             }
                         }

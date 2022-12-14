@@ -210,10 +210,6 @@ namespace GameLibrary.Core.Services
                 })
                 .FirstOrDefaultAsync();
 
-            if (game == null)
-            {
-                throw new ArgumentException("the hottest game is null");
-            }
 
             return game;
         }

@@ -34,7 +34,7 @@ namespace GameLibrary.Tests.UnitTests
             repo = new Repository(context);
             gameService = new GameService(repo);
         }
-        //22
+        //21
         [Test]
         public async Task IsUserDevelepor_ReturnsTrueAndFalseWithTwoUsers()
         {
@@ -465,12 +465,6 @@ namespace GameLibrary.Tests.UnitTests
 
             Assert.That(game.LikesCount, Is.EqualTo(2));
             Assert.That(game.DislikesCount, Is.EqualTo(0));
-        }
-
-        [Test]
-        public void FindHottestGame_ReturnsNull()
-        {
-            Assert.ThrowsAsync<ArgumentException>( async () => await gameService.FindHottestGame());
         }
 
         [Test]

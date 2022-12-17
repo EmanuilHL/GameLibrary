@@ -47,7 +47,7 @@ namespace GameLibrary.Core.Services.Admin
                         UserId = x.Id
                     }).ToListAsync();
 
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(20));
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(3));
 
                 cache.Set(UsersCacheKey, cachedUsers, cacheEntryOptions);
 

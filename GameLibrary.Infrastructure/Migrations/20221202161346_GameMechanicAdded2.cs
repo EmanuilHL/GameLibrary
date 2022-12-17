@@ -34,7 +34,7 @@ namespace GameLibrary.Infrastructure.Migrations
                         column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GameMechanics_Helpers_HelperId",
                         column: x => x.HelperId,

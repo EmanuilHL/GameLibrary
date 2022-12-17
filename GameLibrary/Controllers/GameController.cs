@@ -314,7 +314,7 @@ namespace GameLibrary.Controllers
         }
 
         /// <summary>
-        /// Creates a comment
+        /// Creates a comment 
         /// </summary>
         /// <param name="model"></param>
         /// <param name="gameId"></param>

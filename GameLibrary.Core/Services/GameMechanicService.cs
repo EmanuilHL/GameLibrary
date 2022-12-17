@@ -29,7 +29,11 @@ namespace GameLibrary.Core.Services
         /// <returns></returns>
         public async Task<IEnumerable<MechanicsViewModel>> All(string userId)
         {
-            var gameMechanics = await repo.All<GameMechanic>().Where(x => x.UserId == userId).ToListAsync();
+            //var games = await repo.All<Game>().Where(x => x.UserId == userId).Select(x => x.Title).ToListAsync();
+            var gameMechanics = await repo.All<GameMechanic>()
+                .Include(x => x.Game)
+                .Where(x => x.Game.UserId == userId)
+                .ToListAsync();
 
             return gameMechanics.Select(x => new MechanicsViewModel()
             {
@@ -68,7 +72,8 @@ namespace GameLibrary.Core.Services
                 MechanicDescription = sanitizer.Sanitize(model.MechanicDescription),
                 GameName = sanitizer.Sanitize(model.GameName),
                 GameId = game.Id,
-                UserId = userId
+                UserId = userId,
+                Game = game
             };
             
             await repo.AddAsync(entity);

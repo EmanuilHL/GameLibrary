@@ -83,7 +83,7 @@
             @if(Model.Comments.Count() != 0){
                 @foreach (var comment in Model.Comments)
                 {
-                    <div class="card" style="width: 18rem;">
+                        <div class="card" style="width: 18rem;">
                         <h6 class="card-header">@comment.UserName</h6>
                         <div class="card-body">
                             <p>@comment.CommentDescription</p>
@@ -95,6 +95,7 @@
                             }
                         </div>
                     </div>
+                    
                 }
             }
             else{

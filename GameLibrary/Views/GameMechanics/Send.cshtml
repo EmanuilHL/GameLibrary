@@ -22,16 +22,6 @@
                 <input asp-for="@Model.MechanicDescription" class="form-control" aria-required="true" />
                 <span asp-validation-for="MechanicDescription" class="text-danger"></span>
             </div>
-            @*<div class="mb-3">
-                <label asp-for="@Model.GenreId" class="form-label">Genre</label>
-                <select asp-for="@Model.GenreId" class="form-control">
-                    @foreach (var genre in Model.Genres)
-                    {
-                        <option value="@genre.Id">@genre.GenreName</option>
-                    }
-                </select>
-                <span asp-validation-for="GenreId" class="text-danger"></span>
-            </div>*@
             <div class="mb-3">
                 <input class="btn btn-primary" type="submit" value="Send" />
             </div>

@@ -100,7 +100,7 @@ namespace GameLibrary.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An Error occured when deleting a GameMechanic Post with {0} mechanicId", mechanicId);
+                logger.LogInformation(ex, "An Error occured when deleting a GameMechanic Post with {0} mechanicId", mechanicId);
                 TempData[MessageConstant.ErrorMessage] = "Invalid Attempt";
                 return RedirectToAction(nameof(Service));
             }

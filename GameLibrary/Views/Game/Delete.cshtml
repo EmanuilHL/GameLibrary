@@ -10,6 +10,8 @@
 <section>
     <form method="post">
         @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.ImageUrl)
+        @Html.HiddenFor(x => x.Title)
         <div class="row">
             <div class="col-md-4">
                 <img class="card-img-top" src="@Model.ImageUrl" alt="Game Image">

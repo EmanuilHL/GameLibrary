@@ -6,6 +6,7 @@
     ViewBag.SecondTitle = "Comment section";
     ViewBag.Description = "If you want to delete this post, then contact the administrator under this email project@mail.com";
     ViewBag.Advisement = "For the sake of the project, just turn admin using the admin mail and password and delete it";
+    ViewData["ModelId"] = Model.Id;
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -80,22 +81,18 @@
             <p></p>
             <hr />
             <h6>@ViewBag.SecondTitle</h6>
+            
             @if(Model.Comments.Count() != 0){
                 @foreach (var comment in Model.Comments)
                 {
-                        <div class="card" style="width: 18rem;">
-                        <h6 class="card-header">@comment.UserName</h6>
-                        <div class="card-body">
-                            <p>@comment.CommentDescription</p>
-                            @if(this.User.Identity.Name == comment.UserName){
-                                <form method="post" asp-area="" asp-controller="Game" asp-action="RemoveComment"
-                                  asp-route-commentId="@comment.CommentId" asp-route-gameId="@Model.Id">
-                                   <input value="Delete" type="submit" class="btn btn-outline-danger" />
-                                </form>
-                            }
-                        </div>
-                    </div>
-                    
+                    @if(comment.UserName == Model.PageOwnerName)
+                    {
+                        @await Html.PartialAsync("~/Views/Shared/_OwnerCommentsPartial.cshtml", comment, ViewData)
+                    }
+                    else
+                    {
+                        @await Html.PartialAsync("~/Views/Shared/_UserCommentsPartial.cshtml", comment, ViewData)
+                    }
                 }
             }
             else{

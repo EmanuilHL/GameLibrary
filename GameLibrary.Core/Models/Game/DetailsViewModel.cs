@@ -9,6 +9,7 @@ namespace GameLibrary.Core.Models.Game
 {
     public class DetailsViewModel : GameViewModel
     {
+        public string PageOwnerName { get; set; } = null!;
         public IEnumerable<CommentSectionModel> Comments { get; set; } = new List<CommentSectionModel>();
     }
 }

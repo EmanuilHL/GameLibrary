@@ -400,6 +400,7 @@ namespace GameLibrary.Core.Services
 
         public async Task<DetailsViewModel> ShowDetailsPage(int gameId)
         {
+
             var game = await repo.All<Game>()
                 .Where(g => g.Id == gameId)
                 .Select(x => new DetailsViewModel()
@@ -414,6 +415,7 @@ namespace GameLibrary.Core.Services
                     UserId = x.UserId,
                     LikesCount = x.LikesCount,
                     DislikesCount = x.DislikesCount,
+                    PageOwnerName = x.User.UserName,
                     Comments = x.Comments.Select(i => new CommentSectionModel()
                     {
                         CommentDescription = i.Description,
@@ -519,7 +521,7 @@ namespace GameLibrary.Core.Services
                     UserId = userId, 
                     User = user
                 });
-
+                //default
                 game.HasLiked = false;
                 game.HasDisliked = false;
             }
@@ -552,7 +554,7 @@ namespace GameLibrary.Core.Services
         /// <param name="userId"></param>
         /// <returns>Savechanges</returns>
         /// <exception cref="ArgumentException"></exception>
-        public async Task DislikePost(int gameId, string userId)
+        public async Task DislikePost(int gameId, string userId) 
         {
             var game = await repo.All<Game>().Where(x => x.Id == gameId)
                 .Include(x => x.UsersGamesForLike).FirstOrDefaultAsync();

@@ -13,5 +13,7 @@ namespace GameLibrary.Core.Contracts.Admin
         Task<IEnumerable<UserServiceModel>> AllUsers();
 
         Task<bool> Forget(string userId);
+
+        Task ApplyRoleToDeveloper(string username);
     }
 }

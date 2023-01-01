@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GameLibrary.Areas.Admin.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GameLibrary.Areas.Admin.Controllers
 {

@@ -1,4 +1,5 @@
-﻿using GameLibrary.Core.Contracts;
+﻿using GameLibrary.Areas.Admin.Models;
+using GameLibrary.Core.Contracts;
 using GameLibrary.Core.Contracts.Admin;
 using GameLibrary.Infrastructure.Data.Constants;
 using Microsoft.AspNetCore.Mvc;
@@ -9,13 +10,16 @@ namespace GameLibrary.Areas.Admin.Controllers
     {
         private readonly IUserService userService;
         private readonly ICareerService helperService;
+        private readonly ILogger<UserController> logger;
 
         public UserController(
             IUserService _userService,
-            ICareerService _helperService)
+            ICareerService _helperService,
+            ILogger<UserController> _logger)
         {
             userService = _userService;
             helperService = _helperService;
+            logger = _logger;
         }
 
         public async Task<IActionResult> AllUsers()
@@ -47,6 +51,39 @@ namespace GameLibrary.Areas.Admin.Controllers
             }
 
             return RedirectToAction(nameof(AllUsers));
+        }
+
+        public IActionResult Rank()
+        {
+            var model = new RankFormModel();
+
+            return View(model);
+        }
+
+
+        //Test RANK function
+
+        /// <summary>
+        /// Applies rank to a developer
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+
+        [HttpPost]
+        public async Task<IActionResult> Rank(RankFormModel model)
+        {
+            try
+            {
+                await userService.ApplyRoleToDeveloper(model.UserName);
+                return RedirectToAction("Index", "Admin");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                var newModel = new RankFormModel();
+
+                return View(newModel);
+            }
         }
     }
 }

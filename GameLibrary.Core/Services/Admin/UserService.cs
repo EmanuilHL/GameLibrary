@@ -1,4 +1,5 @@
-﻿using GameLibrary.Core.Contracts.Admin;
+﻿
+using GameLibrary.Core.Contracts.Admin;
 using GameLibrary.Core.Models.Admin;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GameLibrary.Infrastructure.Data.Constants.GameDeveloperConstants;
 
 namespace GameLibrary.Core.Services.Admin
 {
@@ -25,7 +27,6 @@ namespace GameLibrary.Core.Services.Admin
         private readonly UserManager<User> userManager;
 
         public const string UsersCacheKey = "UsersCacheKey";
-        public const string GameDeveloperRole = "Game Developer";
 
         public UserService(
             IRepository _repo,
@@ -76,15 +77,18 @@ namespace GameLibrary.Core.Services.Admin
             user.NormalizedUserName = null;
             user.PasswordHash = null;
             user.UserName = $"forgottenUser-{DateTime.Now.Ticks}";
+            user.DeveloperId = null;
 
             var result = await userManager.UpdateAsync(user);
 
             return result.Succeeded;
         }
 
-        public async Task ApplyRoleToDeveloper(string username)
+        public async Task ApplyRoleToDeveloper(RankFormModel model)
         {
-            var developer = await repo.All<User>().FirstOrDefaultAsync(x => x.UserName == username);
+            //Random random = new Random();
+            //int maximum = 10000;
+            var developer = await repo.All<User>().FirstOrDefaultAsync(x => x.UserName == model.UserName);
 
             if (developer == null)
             {
@@ -96,6 +100,27 @@ namespace GameLibrary.Core.Services.Admin
                 var role = new IdentityRole { Name = GameDeveloperRole };
 
                 await roleManager.CreateAsync(role);
+            }
+
+            var game = await repo.All<Game>().FirstOrDefaultAsync(x => x.Title == model.GameName);
+
+            if (game == null)
+            {
+                throw new ArgumentException("Game not found");
+            }
+
+            //developer.DeveloperId = string.Concat(game.UserId, "/", random.Next(maximum));
+            developer.DeveloperId = game.UserId;
+
+            if (!developer.DevelopersGames.Any(g => g.GameId == game.Id))
+            {
+                developer.DevelopersGames.Add(new DeveloperGame()
+                {
+                    Game = game,
+                    GameId = game.Id,
+                    UserId = developer.Id,
+                    User = developer
+                });
             }
 
             await userManager.AddToRoleAsync(developer, GameDeveloperRole);

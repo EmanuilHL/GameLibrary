@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static GameLibrary.Areas.Admin.Constants.UserConstants;
 using static GameLibrary.Areas.Admin.Constants.AdminConstants;
+using static GameLibrary.Infrastructure.Data.Constants.GameDeveloperConstants;
 
 namespace GameLibrary.Controllers
 {
-    [AuthorizeRoles(UserRole, AdminRole)]
+    [AuthorizeRoles(UserRole, AdminRole, GameDeveloperRole)]
     public class GameMechanicsController : Controller
     {
         private readonly ICareerService helperService;
@@ -80,9 +81,9 @@ namespace GameLibrary.Controllers
         [HttpGet]
         public async Task<IActionResult> Service()
         {
-            if (!await gameService.IsUserDevelepor(this.User.Id()))
+            if (!await gameService.IsUserDevelepor(this.User.Id()) && !this.User.IsInRole(GameDeveloperRole))
             {
-                TempData[MessageConstant.WarningMessage] = "You are not a GamePost Developer!";
+                TempData[MessageConstant.WarningMessage] = "You are not a GamePost/Game Developer!";
                 return RedirectToAction("All", "Game");
             }
 

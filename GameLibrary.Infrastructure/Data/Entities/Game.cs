@@ -19,6 +19,7 @@ namespace GameLibrary.Infrastructure.Data.Entities
             Comments = new List<Comment>();
             UsersGames = new List<UserGame>();
             UsersGamesForLike = new List<UserGameForLike>();
+            DevelopersGames = new List<DeveloperGame>();
         }
 
         [Key]
@@ -69,5 +70,6 @@ namespace GameLibrary.Infrastructure.Data.Entities
         public ICollection<Comment> Comments { get; set; }
         public ICollection<UserGame> UsersGames { get; set; }
         public ICollection<UserGameForLike> UsersGamesForLike { get; set; }
+        public ICollection<DeveloperGame> DevelopersGames { get; set; }
     }
 }

@@ -28,7 +28,8 @@ namespace GameLibrary.Infrastructure.Data.Configuration
                 UserName = "pesho",
                 NormalizedUserName = "PESHO",
                 Email = "agent@mail.com",
-                NormalizedEmail = "AGENT@MAIL.COM"
+                NormalizedEmail = "AGENT@MAIL.COM",
+                DeveloperId = null
             };
 
             user.PasswordHash =
@@ -42,7 +43,8 @@ namespace GameLibrary.Infrastructure.Data.Configuration
                 UserName = "admin@mail.com",
                 NormalizedUserName = "ADMIN@MAIL.COM",
                 Email = "admin@mail.com",
-                NormalizedEmail = "ADMIN@MAIL.COM"
+                NormalizedEmail = "ADMIN@MAIL.COM",
+                DeveloperId = null
             };
 
             user.PasswordHash =

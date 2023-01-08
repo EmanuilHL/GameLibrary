@@ -1,10 +1,12 @@
 ﻿using GameLibrary.Core.Contracts;
 using GameLibrary.Core.Models;
+using GameLibrary.Core.Models.Admin;
 using GameLibrary.Core.Models.Game;
 using GameLibrary.Infrastructure.Data.Common;
 using GameLibrary.Infrastructure.Data.Entities;
 using GameLibrary.Infrastructure.Data.Entities.Enums;
 using Ganss.Xss;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
@@ -416,12 +418,15 @@ namespace GameLibrary.Core.Services
                     LikesCount = x.LikesCount,
                     DislikesCount = x.DislikesCount,
                     PageOwnerName = x.User.UserName,
-                    Comments = x.Comments.Select(i => new CommentSectionModel()
-                    {
-                        CommentDescription = i.Description,
-                        CommentId = i.Id,
-                        UserName = i.User.UserName,
-                    }).ToList()
+                    DeveloperId = x.UserId,
+                    Comments = x.Comments
+                                .Where(x => !x.User.UserName.StartsWith("forgottenUser"))
+                                .Select(i => new CommentSectionModel()
+                                {
+                                    CommentDescription = i.Description,
+                                    CommentId = i.Id,
+                                    UserName = i.User.UserName,
+                                }).ToList()
                 }).FirstOrDefaultAsync();
 
 
@@ -699,6 +704,45 @@ namespace GameLibrary.Core.Services
                     ReviewType = getReviewType(g.Rating).ToString()
                 })
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Not functioning correctly. It cannot take parameter current userId but it should somehow take the ownerId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<GameViewModel>> CreatorsLibrary(string userId)
+        {
+            var test = await repo.All<User>().FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (test == null)
+            {
+                throw new ArgumentException("Test is null");
+            }
+
+            var developer = await repo.AllReadonly<User>()
+                .Where(u => u.DeveloperId == test.DeveloperId)
+                .Include(u => u.DevelopersGames)
+                .ThenInclude(um => um.Game)
+                .ThenInclude(m => m.Genre)
+                .FirstOrDefaultAsync();
+
+            if (developer == null)
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            return developer.DevelopersGames
+                .Select(x => x.Game)
+                .Select(x => new GameViewModel()
+                {
+                    Id = x.Id,
+                    ImageUrl = x.ImageUrl,
+                    Rating = x.Rating,
+                    ReviewType = getReviewType(x.Rating).ToString(),
+                    Genre = x.Genre.GenreName,
+                    Title = x.Title
+                });
         }
     }
 }

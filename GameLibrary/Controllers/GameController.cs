@@ -9,13 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static GameLibrary.Areas.Admin.Constants.AdminConstants;
+using static GameLibrary.Infrastructure.Data.Constants.GameDeveloperConstants;
 using GameLibrary.Core.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using static GameLibrary.Areas.Admin.Constants.UserConstants;
+using GameLibrary.Core.Models.Admin;
 
 namespace GameLibrary.Controllers
 {
-    [AuthorizeRoles(AdminRole, UserRole)]
+    [AuthorizeRoles(AdminRole, UserRole, GameDeveloperRole)]
     public class GameController : Controller
     {
         private readonly IGameService gameService;
@@ -464,6 +466,27 @@ namespace GameLibrary.Controllers
             var model = await gameService.GetGameById(gameId);
 
             return RedirectToAction(nameof(Details), new { gameId = gameId, information = model.GetInformation() });
+        }
+
+
+        public async Task<IActionResult> DeveloperGame()
+        {
+            if (!this.User.IsInRole(GameDeveloperRole))
+            {
+                TempData[MessageConstant.WarningMessage] = "You are not a Game Developer!";
+                return RedirectToAction("All", "Game");
+            }
+
+            try
+            {
+                var model = await gameService.CreatorsLibrary(this.User.Id());
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return RedirectToAction(nameof(All));
+            }
         }
         
     }

@@ -45,6 +45,7 @@ namespace GameLibrary.Infrastructure.Data
         {
             builder.Entity<UserGame>().HasKey(p => new { p.UserId, p.GameId});
             builder.Entity<UserGameForLike>().HasKey(p => new { p.UserId, p.GameId});
+            builder.Entity<DeveloperGame>().HasKey(p => new { p.UserId, p.GameId});
 
             foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {

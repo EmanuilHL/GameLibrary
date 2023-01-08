@@ -4,6 +4,7 @@ using GameLibrary.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameLibrary.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230102094950_DeveloperIdAdded")]
+    partial class DeveloperIdAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,21 +52,6 @@ namespace GameLibrary.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comment");
-                });
-
-            modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.DeveloperGame", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("DeveloperGame");
                 });
 
             modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.Game", b =>
@@ -355,15 +342,15 @@ namespace GameLibrary.Infrastructure.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9ee86a76-a953-42dc-b21f-58646a71fb49",
+                            ConcurrencyStamp = "0bc52b04-d099-4b8b-92e3-ff7b7cd70996",
                             Email = "agent@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "AGENT@MAIL.COM",
                             NormalizedUserName = "PESHO",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ+pOipEggIKRwDd8ykNfCKuB+KEM58L/ZUm+pQt2UvaaYBsv56+OW9CDffgwXi69w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEvwm1eG7mKTNFGeR4Pn60gZmWP82cWKNbZV3CFD2Je9Yyyzg01wny2t0C4b77mWfA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f1c974b2-e031-482c-b75b-f152e9f1be01",
+                            SecurityStamp = "45ca9c6f-ff3f-4275-b628-0c1b178138cd",
                             TwoFactorEnabled = false,
                             UserName = "pesho"
                         },
@@ -371,15 +358,15 @@ namespace GameLibrary.Infrastructure.Migrations
                         {
                             Id = "85601b02-9a83-47d0-b4a2-fcd5c6c16f1e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3be64854-0bb7-42ed-a4a9-2f7370ebb8aa",
+                            ConcurrencyStamp = "b2028758-c3a5-4a1e-8113-991cd4ce9ac7",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOBfNs7dT9tQrsR1BkOWNF+FN89uuIwT3C9dUZ8l7OKpSMU+rVZIsAy33cxf+PJ/xA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEO/RKMUjviMrHjwvc1Cy/PzAjD+3Vn018bfWlwbehGTLD568Jkf+7ObJM9LGjnkmQA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7a33f77f-c317-401b-87d8-913d67713c8b",
+                            SecurityStamp = "ebba9db5-3e64-4303-8911-c24bb4ab9243",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         });
@@ -571,25 +558,6 @@ namespace GameLibrary.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.DeveloperGame", b =>
-                {
-                    b.HasOne("GameLibrary.Infrastructure.Data.Entities.Game", "Game")
-                        .WithMany("DevelopersGames")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("GameLibrary.Infrastructure.Data.Entities.User", "User")
-                        .WithMany("DevelopersGames")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.Game", b =>
                 {
                     b.HasOne("GameLibrary.Infrastructure.Data.Entities.Genre", "Genre")
@@ -740,8 +708,6 @@ namespace GameLibrary.Infrastructure.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("DevelopersGames");
-
                     b.Navigation("UsersGames");
 
                     b.Navigation("UsersGamesForLike");
@@ -749,8 +715,6 @@ namespace GameLibrary.Infrastructure.Migrations
 
             modelBuilder.Entity("GameLibrary.Infrastructure.Data.Entities.User", b =>
                 {
-                    b.Navigation("DevelopersGames");
-
                     b.Navigation("UsersGames");
 
                     b.Navigation("UsersGamesForLike");

@@ -29,10 +29,16 @@ namespace GameLibrary.Core.Services
         /// <returns></returns>
         public async Task<IEnumerable<MechanicsViewModel>> All(string userId)
         {
-            //var games = await repo.All<Game>().Where(x => x.UserId == userId).Select(x => x.Title).ToListAsync();
+            var user = await repo.All<User>().FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
             var gameMechanics = await repo.All<GameMechanic>()
                 .Include(x => x.Game)
-                .Where(x => x.Game.UserId == userId)
+                .Where(x => x.Game.UserId == userId || x.Game.UserId == user.DeveloperId)
                 .ToListAsync();
 
             return gameMechanics.Select(x => new MechanicsViewModel()

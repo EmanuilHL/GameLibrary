@@ -1,4 +1,5 @@
 ﻿using GameLibrary.Core.Models;
+using GameLibrary.Core.Models.Admin;
 using GameLibrary.Core.Models.Game;
 using GameLibrary.Infrastructure.Data.Entities;
 using System;
@@ -47,5 +48,7 @@ namespace GameLibrary.Core.Contracts
         Task<GameViewModel> GetGameById(int gameId);
 
         Task RemoveGameCommentById(int commentId, int gameId);
+
+        Task<IEnumerable<GameViewModel>> CreatorsLibrary(string userId);
     }
 }

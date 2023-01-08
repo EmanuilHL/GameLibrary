@@ -1,8 +1,9 @@
-﻿using GameLibrary.Areas.Admin.Models;
+﻿
 using GameLibrary.Core.Contracts;
 using GameLibrary.Core.Contracts.Admin;
 using GameLibrary.Infrastructure.Data.Constants;
 using Microsoft.AspNetCore.Mvc;
+using GameLibrary.Core.Models.Admin;
 
 namespace GameLibrary.Areas.Admin.Controllers
 {
@@ -60,9 +61,6 @@ namespace GameLibrary.Areas.Admin.Controllers
             return View(model);
         }
 
-
-        //Test RANK function
-
         /// <summary>
         /// Applies rank to a developer
         /// </summary>
@@ -74,7 +72,7 @@ namespace GameLibrary.Areas.Admin.Controllers
         {
             try
             {
-                await userService.ApplyRoleToDeveloper(model.UserName);
+                await userService.ApplyRoleToDeveloper(model);
                 return RedirectToAction("Index", "Admin");
             }
             catch (Exception ex)

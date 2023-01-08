@@ -1,4 +1,5 @@
-﻿using GameLibrary.Core.Models.Admin;
+﻿
+using GameLibrary.Core.Models.Admin;
 using GameLibrary.Infrastructure.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,6 @@ namespace GameLibrary.Core.Contracts.Admin
 
         Task<bool> Forget(string userId);
 
-        Task ApplyRoleToDeveloper(string username);
+        Task ApplyRoleToDeveloper(RankFormModel model);
     }
 }

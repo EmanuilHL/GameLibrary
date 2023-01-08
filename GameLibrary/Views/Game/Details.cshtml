@@ -21,7 +21,7 @@
                  src="@Model.ImageUrl" alt="Game Image">
             <p></p>
             <hr />
-            @if(this.User.Id() != Model.UserId)
+            @if(this.User.Id() != Model.UserId && !this.User.IsInRole(GameDeveloperRole))
             {
                 if (this.User?.Identity?.IsAuthenticated ?? false)
                 {
@@ -92,7 +92,11 @@
                     else if(comment.UserName == Model.PageOwnerName)
                     {
                         @await Html.PartialAsync("~/Views/Shared/_OwnerCommentsPartial.cshtml", comment, ViewData)
-                    }
+                    }@*
+                    else if(this.User.IsInRole(GameDeveloperRole) && Model.DeveloperId == this.User.Id())
+                    {
+                        @await Html.PartialAsync("~/Views/Shared/_DeveloperCommentsPartial.cshtml", comment, ViewData)
+                    }*@
                     else
                     {
                         @await Html.PartialAsync("~/Views/Shared/_UserCommentsPartial.cshtml", comment, ViewData)

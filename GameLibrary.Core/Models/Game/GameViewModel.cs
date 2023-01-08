@@ -33,8 +33,9 @@ namespace GameLibrary.Core.Models.Game
 
 		public string ReviewType { get; set; } = null!;
 
+		public string DeveloperId { get; set; }
 
-        public int LikesCount { get; set; }
+		public int LikesCount { get; set; }
 
         public int DislikesCount { get; set; }
     }
